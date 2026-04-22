@@ -1,1 +1,2627 @@
-ok
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PGI • MediumAssist Pro</title>
+<link rel="icon" type="image/png" href="VOTRE_IMAGE_ICI.png">
+<link rel="apple-touch-icon" href="VOTRE_IMAGE_ICI.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════ VARIABLES ═══════════════ */
+:root{
+  --bg:#111111;--bg2:#181818;--bg3:#1f1f1f;
+  --border:rgba(255,255,255,0.07);
+  --text:#f0f0f0;--text2:#888;--text3:#444;
+  --cyan:#00cfff;--green:#39ff14;--red:#ff4400;
+  --yellow:#ffd000;--orange:#ff8800;--purple:#cc44ff;
+  --teal:#00ffcc;--pink:#ff3399;--gold:#ffaa00;
+  --r:12px;--r-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{height:100%;overflow:hidden;overscroll-behavior:none;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
+  display:flex;flex-direction:column;height:100dvh;overflow:hidden;overscroll-behavior:none;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
+
+/* ═══════════════ HEADER ═══════════════ */
+header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+  padding:9px 14px;background:rgba(17,17,17,0.97);border-bottom:1px solid var(--border);z-index:20;}
+.logo-text{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;letter-spacing:2px;line-height:1.1;
+  color:var(--cyan);animation:blink-pgi 1.8s ease-in-out infinite;}
+@keyframes blink-pgi{
+  0%,100%{opacity:1;text-shadow:0 0 14px rgba(0,207,255,0.9),0 0 28px rgba(0,207,255,0.4);}
+  50%{opacity:0.5;text-shadow:0 0 4px rgba(0,207,255,0.3);}
+}
+.logo-sub{font-size:8px;color:var(--text3);letter-spacing:0.5px;margin-top:2px;}
+.header-right{display:flex;align-items:center;gap:7px;}
+.status-pill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;
+  font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s;}
+.s-idle{background:rgba(255,255,255,0.04);color:var(--text3);border:1px solid rgba(255,255,255,0.06);}
+.s-listening{background:rgba(0,207,255,0.1);color:var(--cyan);border:1px solid rgba(0,207,255,0.25);}
+.s-processing{background:rgba(204,68,255,0.1);color:var(--purple);border:1px solid rgba(204,68,255,0.25);}
+.s-paused{background:rgba(255,136,0,0.1);color:var(--orange);border:1px solid rgba(255,136,0,0.25);}
+.s-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.s-listening .s-dot{animation:blink 1s infinite;}
+.s-processing .s-dot{animation:pulse-s 0.7s ease-in-out infinite;}
+.s-paused .s-dot{animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.1}}
+@keyframes pulse-s{0%,100%{transform:scale(1)}50%{transform:scale(1.7)}}
+.hbtn{width:32px;height:32px;border-radius:var(--r-sm);border:none;cursor:pointer;
+  background:rgba(255,255,255,0.05);color:var(--text2);display:flex;align-items:center;
+  justify-content:center;font-size:15px;transition:all 0.2s;}
+.hbtn:hover{background:rgba(255,255,255,0.1);color:var(--text);}
+
+/* ═══════════════ SESSION BAR ═══════════════ */
+#session-bar{
+  flex-shrink:0;display:none;
+  background:rgba(255,68,0,0.08);border-bottom:1px solid rgba(255,68,0,0.2);
+  padding:6px 14px;align-items:center;justify-content:space-between;gap:8px;
+}
+#session-bar.show{display:flex;}
+.sbar-left{display:flex;align-items:center;gap:10px;}
+.sbar-client{font-size:12px;font-weight:700;color:var(--text);}
+.sbar-timer{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  color:var(--red);text-shadow:0 0 8px rgba(255,68,0,0.5);}
+.sbar-right{display:flex;gap:6px;}
+.sbar-btn{height:28px;padding:0 10px;border-radius:6px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:800;letter-spacing:1px;
+  text-transform:uppercase;transition:all 0.2s;}
+#sbar-pause{background:rgba(255,136,0,0.15);color:var(--orange);border:1px solid rgba(255,136,0,0.3);}
+#sbar-pause:hover{background:rgba(255,136,0,0.25);}
+#sbar-stop{background:rgba(255,68,0,0.15);color:var(--red);border:1px solid rgba(255,68,0,0.3);}
+#sbar-stop:hover{background:rgba(255,68,0,0.25);}
+
+/* ═══════════════ CLIENT BANNER ═══════════════ */
+#client-banner{
+  flex-shrink:0;display:none;
+  background:rgba(204,68,255,0.06);border-bottom:1px solid rgba(204,68,255,0.15);
+  padding:6px 14px;align-items:center;justify-content:space-between;gap:10px;
+}
+#client-banner.show{display:flex;}
+.cb-left{display:flex;align-items:center;gap:8px;}
+.cb-avatar{width:26px;height:26px;border-radius:50%;background:rgba(204,68,255,0.2);
+  border:1px solid rgba(204,68,255,0.35);display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',monospace;font-size:8px;font-weight:900;color:var(--purple);}
+.cb-name{font-size:12px;font-weight:700;color:var(--text);}
+.cb-detail{font-size:9px;color:var(--text2);margin-top:1px;}
+.cb-right{display:flex;align-items:center;gap:5px;}
+.cb-btn{padding:3px 9px;border-radius:6px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:700;
+  background:rgba(204,68,255,0.12);color:var(--purple);border:1px solid rgba(204,68,255,0.2);transition:all 0.2s;}
+.cb-btn:hover{background:rgba(204,68,255,0.22);}
+.cb-close{background:transparent;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px;}
+
+/* ═══════════════ MAIN ═══════════════ */
+main{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 12px;
+  display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch;}
+
+/* ═══════════════ CARDS ═══════════════ */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;}
+.clabel{font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.clabel-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+/* Transcript — CYAN */
+#transcript-card{border-color:rgba(0,207,255,0.2);}
+#transcript-card .clabel{color:var(--cyan);}
+#transcript-scroll{max-height:80px;overflow-y:auto;margin-bottom:3px;}
+#transcript-text{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:#ccc;word-break:break-word;}
+#transcript-interim{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);font-style:italic;min-height:14px;}
+
+/* Suggestion — GREEN */
+#suggestion-card{border-color:rgba(57,255,20,0.25);box-shadow:0 0 20px rgba(57,255,20,0.04);}
+#suggestion-card .clabel{color:var(--green);}
+#suggestion-text{font-size:16px;line-height:1.6;color:var(--text);font-weight:500;min-height:48px;}
+#suggestion-text.ph{color:var(--text3);font-size:12px;font-weight:400;font-style:italic;}
+#suggestion-text.loading{background:linear-gradient(90deg,var(--text3) 25%,#999 50%,var(--text3) 75%);
+  background-size:200%;animation:shimmer 1.5s infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Context */
+#context-card{display:none;padding:6px 12px;background:rgba(204,68,255,0.05);border-color:rgba(204,68,255,0.15);}
+#context-card.show{display:block;}
+#context-text{font-size:11px;color:#cc88ff;font-style:italic;}
+
+/* Alert — RED */
+#alert-card{display:none;background:rgba(255,68,0,0.07);border-color:rgba(255,68,0,0.3);animation:slide-in 0.3s ease-out;}
+#alert-card.show{display:block;}
+#alert-card .clabel{color:var(--red);}
+#alert-text{font-size:14px;line-height:1.5;color:#ff9977;font-weight:500;}
+
+/* Opportunity — YELLOW */
+#opp-card{display:none;background:rgba(255,208,0,0.05);border-color:rgba(255,208,0,0.25);animation:slide-in 0.3s ease-out;}
+#opp-card.show{display:block;}
+#opp-card .clabel{color:var(--yellow);}
+.opp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+#opp-service{font-size:13px;font-weight:700;color:#ffe566;}
+#opp-price{background:rgba(255,208,0,0.15);border:1px solid rgba(255,208,0,0.25);border-radius:6px;
+  padding:2px 8px;font-size:11px;font-weight:700;color:var(--yellow);}
+#opp-why{font-size:12px;color:#ccaa44;line-height:1.5;margin-bottom:9px;}
+#btn-conv{width:100%;padding:9px;background:rgba(255,208,0,0.1);border:1px solid rgba(255,208,0,0.25);
+  border-radius:var(--r-sm);cursor:pointer;color:var(--yellow);font-family:'Inter',sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:0.5px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+#btn-conv:hover{background:rgba(255,208,0,0.18);}
+
+/* Conversion — YELLOW */
+#conv-panel{display:none;background:rgba(255,208,0,0.04);border:1px solid rgba(255,208,0,0.15);
+  border-radius:var(--r);padding:11px 13px;animation:slide-in 0.3s ease-out;}
+#conv-panel.show{display:block;}
+#conv-panel .clabel{color:var(--yellow);}
+.conv-phrase{background:var(--bg2);border:1px solid rgba(255,208,0,0.12);border-left:3px solid var(--yellow);
+  border-radius:var(--r-sm);padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:all 0.2s;
+  font-size:13px;line-height:1.5;color:var(--text);}
+.conv-phrase:hover{background:rgba(255,208,0,0.06);}
+.conv-num{font-size:8px;font-weight:800;color:var(--yellow);letter-spacing:1px;margin-bottom:3px;}
+
+/* Module result cards */
+.mod-result-card{border-radius:var(--r);padding:12px 14px;margin-bottom:0;animation:slide-in 0.35s ease-out;}
+.mod-result-text{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;}
+.mod-result-label{font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.mod-tarot{background:rgba(255,170,0,0.06);border:1px solid rgba(255,170,0,0.2);}
+.mod-tarot .mod-result-label{color:var(--gold);}
+.mod-numerologie{background:rgba(204,68,255,0.06);border:1px solid rgba(204,68,255,0.2);}
+.mod-numerologie .mod-result-label{color:var(--purple);}
+.mod-horoscope{background:rgba(255,208,0,0.05);border:1px solid rgba(255,208,0,0.2);}
+.mod-horoscope .mod-result-label{color:var(--yellow);}
+.mod-astrologie{background:rgba(0,207,255,0.05);border:1px solid rgba(0,207,255,0.2);}
+.mod-astrologie .mod-result-label{color:var(--cyan);}
+.mod-ange{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);}
+.mod-ange .mod-result-label{color:#fff;}
+.mod-main{background:rgba(255,51,153,0.05);border:1px solid rgba(255,51,153,0.2);}
+.mod-main .mod-result-label{color:var(--pink);}
+.mod-pendule{background:rgba(0,255,204,0.05);border:1px solid rgba(0,255,204,0.2);}
+.mod-pendule .mod-result-label{color:var(--teal);}
+.mod-alerte-glob{background:rgba(255,68,0,0.06);border:1px solid rgba(255,68,0,0.2);}
+.mod-alerte-glob .mod-result-label{color:var(--red);}
+
+/* Empty state */
+#empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:30px 20px;gap:10px;}
+.es-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:var(--cyan);
+  text-shadow:0 0 10px rgba(0,207,255,0.4);}
+.es-sub{font-size:12px;color:var(--text3);line-height:1.7;max-width:260px;}
+.es-sub strong{color:var(--text2);}
+.es-pgi{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:var(--cyan);
+  letter-spacing:4px;opacity:0.15;margin-bottom:12px;}
+
+/* ═══════════════ ASSISTANCE BAR (quick actions) ═══════════════ */
+#assistance-bar{
+  flex-shrink:0;padding:7px 12px;background:var(--bg2);
+  border-top:1px solid var(--border);overflow-x:auto;
+  display:flex;gap:6px;align-items:center;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+#assistance-bar::-webkit-scrollbar{display:none;}
+.qa-bar-label{font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);white-space:nowrap;flex-shrink:0;margin-right:3px;}
+.qa-btn{flex-shrink:0;padding:6px 11px;border-radius:18px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:10px;font-weight:700;white-space:nowrap;
+  transition:all 0.2s;letter-spacing:0.3px;}
+.qa-btn:hover{filter:brightness(1.25);transform:translateY(-1px);}
+.qa-btn:active{transform:scale(0.96);}
+.qa-1{background:rgba(0,207,255,0.12);color:var(--cyan);border:1px solid rgba(0,207,255,0.2);}
+.qa-2{background:rgba(57,255,20,0.1);color:var(--green);border:1px solid rgba(57,255,20,0.2);}
+.qa-3{background:rgba(255,68,0,0.1);color:var(--red);border:1px solid rgba(255,68,0,0.2);}
+.qa-4{background:rgba(255,208,0,0.1);color:var(--yellow);border:1px solid rgba(255,208,0,0.2);}
+.qa-5{background:rgba(204,68,255,0.1);color:var(--purple);border:1px solid rgba(204,68,255,0.2);}
+.qa-6{background:rgba(0,255,204,0.1);color:var(--teal);border:1px solid rgba(0,255,204,0.2);}
+.qa-7{background:rgba(255,51,153,0.1);color:var(--pink);border:1px solid rgba(255,51,153,0.2);}
+.qa-8{background:rgba(255,136,0,0.1);color:var(--orange);border:1px solid rgba(255,136,0,0.2);}
+
+/* ═══════════════ MODULE STRIP ═══════════════ */
+#module-strip{
+  flex-shrink:0;padding:6px 12px;background:rgba(14,14,14,0.95);
+  border-top:1px solid var(--border);overflow-x:auto;
+  display:flex;gap:5px;align-items:center;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+#module-strip::-webkit-scrollbar{display:none;}
+.mod-strip-label{font-size:7px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.2);white-space:nowrap;flex-shrink:0;margin-right:3px;}
+.mod-btn{flex-shrink:0;padding:5px 10px;border-radius:14px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:800;white-space:nowrap;
+  transition:all 0.2s;letter-spacing:0.5px;text-transform:uppercase;}
+.mod-btn:hover{filter:brightness(1.2);transform:translateY(-1px);}
+.mb-tarot{background:rgba(255,170,0,0.12);color:var(--gold);border:1px solid rgba(255,170,0,0.2);}
+.mb-num{background:rgba(204,68,255,0.1);color:var(--purple);border:1px solid rgba(204,68,255,0.2);}
+.mb-horoscope{background:rgba(255,208,0,0.1);color:var(--yellow);border:1px solid rgba(255,208,0,0.2);}
+.mb-astro{background:rgba(0,207,255,0.1);color:var(--cyan);border:1px solid rgba(0,207,255,0.2);}
+.mb-ange{background:rgba(255,255,255,0.06);color:#ccc;border:1px solid rgba(255,255,255,0.1);}
+.mb-main{background:rgba(255,51,153,0.1);color:var(--pink);border:1px solid rgba(255,51,153,0.2);}
+.mb-pendule{background:rgba(0,255,204,0.1);color:var(--teal);border:1px solid rgba(0,255,204,0.2);}
+.mb-alertes{background:rgba(255,68,0,0.1);color:var(--red);border:1px solid rgba(255,68,0,0.2);}
+
+/* ═══════════════ FOOTER ═══════════════ */
+footer{flex-shrink:0;padding:9px 12px 13px;background:rgba(17,17,17,0.98);
+  border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;}
+.fgroup{flex:1;display:flex;gap:6px;}
+#btn-start{flex:1;height:48px;border-radius:12px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:800;letter-spacing:0.5px;
+  display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s;
+  background:rgba(0,207,255,0.1);color:var(--cyan);border:2px solid rgba(0,207,255,0.3);}
+#btn-start:hover{background:rgba(0,207,255,0.18);}
+.fbtn{width:48px;height:48px;border-radius:11px;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:900;letter-spacing:0.5px;text-align:center;}
+.fbtn:hover{filter:brightness(1.2);}
+.fbtn:disabled{opacity:0.25;cursor:not-allowed;}
+#btn-force{background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.2);color:var(--green);}
+#btn-email{background:rgba(0,255,204,0.1);border:1px solid rgba(0,255,204,0.2);color:var(--teal);}
+#btn-clients{background:rgba(204,68,255,0.1);border:1px solid rgba(204,68,255,0.2);color:var(--purple);}
+#btn-rapports{background:rgba(255,208,0,0.1);border:1px solid rgba(255,208,0,0.2);color:var(--yellow);}
+#btn-raz{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text3);}
+#btn-raz:hover{background:rgba(255,68,0,0.1);color:var(--red);}
+.fbt-label{font-size:8px;font-weight:900;letter-spacing:0.5px;line-height:1.2;text-align:center;}
+
+/* ═══════════════ OVERLAYS BASE ═══════════════ */
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.82);
+  backdrop-filter:blur(4px);display:none;align-items:flex-end;}
+.overlay.show{display:flex;animation:fade-in 0.2s;}
+.overlay.center{align-items:center;justify-content:center;padding:20px;}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+.drawer{width:100%;max-height:90vh;background:#161616;border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px 20px 0 0;padding:18px 14px 28px;overflow-y:auto;
+  animation:slide-modal 0.3s ease-out;}
+@keyframes slide-modal{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.drawer-handle{width:36px;height:3px;border-radius:2px;background:rgba(255,255,255,0.1);margin:0 auto 14px;}
+.drawer-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;margin-bottom:14px;}
+.dheader{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.dheader .drawer-title{margin-bottom:0;}
+.dbtn-close{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px;color:var(--text2);font-size:13px;font-weight:800;padding:5px 12px;
+  cursor:pointer;flex-shrink:0;}
+
+/* ═══════════════ FORM ELEMENTS ═══════════════ */
+.fg{margin-bottom:13px;}
+.fl{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
+.fhint{font-size:10px;color:var(--text3);margin-top:4px;line-height:1.5;font-style:italic;}
+.fi,.fta,.fsel{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--r-sm);padding:9px 11px;color:var(--text);font-family:'Inter',sans-serif;
+  font-size:13px;outline:none;transition:border 0.2s;}
+.fi:focus,.fta:focus{border-color:rgba(0,207,255,0.35);}
+.fta{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;resize:vertical;min-height:90px;}
+.fsel{appearance:none;cursor:pointer;}
+.api-row{display:flex;gap:6px;align-items:center;}
+.api-row .fi{flex:1;}
+.eye-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--r-sm);padding:9px 10px;cursor:pointer;color:var(--text3);font-size:11px;font-weight:700;}
+.btn-primary{width:100%;padding:12px;background:rgba(0,207,255,0.15);border:1px solid rgba(0,207,255,0.35);
+  border-radius:10px;cursor:pointer;color:var(--cyan);font-family:'Inter',sans-serif;
+  font-size:13px;font-weight:800;letter-spacing:0.3px;transition:all 0.2s;margin-top:4px;}
+.btn-primary:hover{filter:brightness(1.15);transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.btn-secondary{width:100%;padding:9px;margin-top:6px;background:transparent;
+  border:1px solid rgba(255,255,255,0.08);border-radius:10px;cursor:pointer;
+  color:var(--text3);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;transition:all 0.2s;}
+.btn-secondary:hover{border-color:rgba(255,255,255,0.15);color:var(--text2);}
+.btn-danger{background:rgba(255,68,0,0.1);border-color:rgba(255,68,0,0.2);color:var(--red);}
+.btn-danger:hover{background:rgba(255,68,0,0.2);}
+.divider{height:1px;background:var(--border);margin:13px 0;}
+.section-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.tab-row{display:flex;gap:5px;margin-bottom:11px;}
+.tab-btn{flex:1;padding:7px;border-radius:var(--r-sm);border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:800;letter-spacing:0.5px;
+  background:rgba(255,255,255,0.04);color:var(--text3);transition:all 0.2s;text-transform:uppercase;}
+.tab-btn.active{background:rgba(204,68,255,0.12);color:var(--purple);border:1px solid rgba(204,68,255,0.2);}
+
+/* ═══════════════ PENDULE ═══════════════ */
+.pendule-wrap{display:flex;flex-direction:column;align-items:center;padding:20px 0 10px;}
+.pendule-container{position:relative;width:60px;height:110px;margin-bottom:10px;}
+.pendule-line{position:absolute;top:0;left:50%;width:2px;height:90px;
+  background:linear-gradient(to bottom,rgba(255,255,255,0.3),var(--teal));
+  transform-origin:top center;transform:translateX(-50%);
+  animation:pendule-idle 1.8s ease-in-out infinite;}
+.pendule-bob{position:absolute;bottom:0;left:50%;width:18px;height:18px;border-radius:50%;
+  background:radial-gradient(circle,#00ffdd,#00aa88);
+  box-shadow:0 0 12px rgba(0,255,204,0.6);transform:translateX(-50%);}
+@keyframes pendule-idle{0%,100%{transform:translateX(-50%) rotate(-25deg);}50%{transform:translateX(-50%) rotate(25deg);}}
+.pendule-answer{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;
+  text-align:center;margin:10px 0;animation:slide-in 0.4s ease-out;}
+.pendule-yes{color:var(--green);text-shadow:0 0 20px rgba(57,255,20,0.5);}
+.pendule-no{color:var(--red);text-shadow:0 0 20px rgba(255,68,0,0.5);}
+.pendule-maybe{color:var(--yellow);text-shadow:0 0 20px rgba(255,208,0,0.5);}
+
+/* ═══════════════ TAROT CARDS ═══════════════ */
+.tarot-cards-grid{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
+.tarot-card-chip{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;
+  background:rgba(255,170,0,0.1);border:1px solid rgba(255,170,0,0.25);color:var(--gold);
+  transition:all 0.2s;user-select:none;}
+.tarot-card-chip.selected{background:rgba(255,170,0,0.25);border-color:rgba(255,170,0,0.5);
+  box-shadow:0 0 10px rgba(255,170,0,0.25);}
+.tarot-spread-btn{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;margin:4px;
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:700;transition:all 0.2s;
+  background:rgba(255,170,0,0.1);color:var(--gold);border:1px solid rgba(255,170,0,0.2);}
+.tarot-spread-btn.active{background:rgba(255,170,0,0.25);border-color:rgba(255,170,0,0.4);}
+.tarot-instruction{background:rgba(255,170,0,0.08);border:1px solid rgba(255,170,0,0.2);
+  border-radius:var(--r);padding:12px 14px;font-size:14px;color:var(--gold);font-weight:600;
+  text-align:center;margin:10px 0;line-height:1.5;}
+
+/* ═══════════════ NUMEROLOGIE ═══════════════ */
+.num-badge{display:inline-flex;flex-direction:column;align-items:center;
+  background:rgba(204,68,255,0.1);border:1px solid rgba(204,68,255,0.25);
+  border-radius:10px;padding:10px 14px;margin:4px;min-width:60px;}
+.num-value{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:var(--purple);}
+.num-label{font-size:8px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+
+/* ═══════════════ RAPPORT ═══════════════ */
+.report-section{margin-bottom:14px;}
+.report-section-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  padding:6px 10px;border-radius:6px;margin-bottom:8px;display:inline-block;}
+.report-body{font-size:13px;line-height:1.7;color:var(--text2);white-space:pre-wrap;}
+.report-display{background:var(--bg3);border:1px solid rgba(255,255,255,0.07);
+  border-radius:var(--r);padding:14px;max-height:55vh;overflow-y:auto;}
+
+/* ═══════════════ CLIENT ITEMS ═══════════════ */
+.client-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:9px;}
+.client-item:hover{background:rgba(204,68,255,0.07);border-color:rgba(204,68,255,0.2);}
+.client-item.active-cl{background:rgba(204,68,255,0.1);border-color:rgba(204,68,255,0.3);}
+.ci-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:rgba(204,68,255,0.15);
+  border:1px solid rgba(204,68,255,0.25);display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',monospace;font-size:8px;font-weight:900;color:var(--purple);}
+.ci-info{flex:1;min-width:0;}
+.ci-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ci-detail{font-size:9px;color:var(--text2);margin-top:1px;}
+.ci-badge{flex-shrink:0;font-size:8px;font-weight:700;padding:2px 6px;border-radius:100px;
+  background:rgba(204,68,255,0.12);color:var(--purple);border:1px solid rgba(204,68,255,0.2);}
+.search-bar{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--r-sm);padding:9px 11px;color:var(--text);font-family:'Inter',sans-serif;
+  font-size:13px;outline:none;margin-bottom:10px;}
+.search-bar:focus{border-color:rgba(204,68,255,0.35);}
+.consult-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:all 0.2s;}
+.consult-item:hover{background:rgba(0,255,204,0.04);border-color:rgba(0,255,204,0.15);}
+.consult-date{font-size:9px;color:var(--teal);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px;}
+.consult-summary{font-size:12px;color:var(--text2);line-height:1.5;}
+.kp-badge{display:inline-block;background:rgba(0,255,204,0.08);border:1px solid rgba(0,255,204,0.15);
+  border-radius:4px;padding:1px 6px;font-size:9px;color:#66ffdd;margin:2px 2px 0 0;}
+
+/* ═══════════════ VOICE ═══════════════ */
+.voice-ring{width:70px;height:70px;border-radius:50%;background:rgba(255,51,153,0.1);
+  border:2px solid rgba(255,51,153,0.25);display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',monospace;font-size:11px;font-weight:900;color:var(--pink);
+  margin:0 auto 10px;transition:all 0.3s;}
+.voice-ring.recording{background:rgba(255,51,153,0.2);border-color:rgba(255,51,153,0.6);
+  animation:ring-pulse 1s ease-in-out infinite;box-shadow:0 0 20px rgba(255,51,153,0.3);}
+@keyframes ring-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+#voice-progress{height:3px;background:rgba(255,51,153,0.15);border-radius:2px;margin:10px 0;overflow:hidden;}
+#voice-progress-bar{height:100%;background:var(--pink);border-radius:2px;width:0%;transition:width 0.1s;}
+.voice-done-text{color:var(--pink);font-weight:700;}
+.voice-playback{display:none;background:rgba(255,51,153,0.07);border:1px solid rgba(255,51,153,0.2);
+  border-radius:var(--r-sm);padding:10px 12px;margin-top:10px;}
+.voice-playback.show{display:block;}
+.voice-playback audio{width:100%;height:34px;margin-top:4px;}
+.voice-play-label{font-size:9px;font-weight:700;color:var(--pink);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+
+/* ═══════════════ MINI-OVERLAY ═══════════════ */
+.mini-overlay{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.88);
+  backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px;}
+.mini-overlay.show{display:flex;animation:fade-in 0.2s;}
+.mini-box{background:#161616;border:1px solid rgba(255,255,255,0.1);border-radius:16px;
+  padding:20px;width:100%;max-width:380px;}
+.mini-title{font-size:14px;font-weight:800;margin-bottom:13px;display:flex;align-items:center;gap:8px;}
+.mini-close{margin-left:auto;background:transparent;border:none;cursor:pointer;color:var(--text3);font-size:18px;}
+
+/* ═══════════════ CONFIRMATION ═══════════════ */
+.confirm-box{background:#1a1a1a;border:1px solid rgba(255,68,0,0.3);border-radius:16px;
+  padding:24px 20px;width:100%;max-width:340px;text-align:center;}
+.confirm-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.confirm-msg{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;}
+.confirm-buttons{display:flex;gap:8px;}
+.confirm-yes{flex:1;padding:12px;border-radius:10px;border:none;cursor:pointer;
+  background:rgba(255,68,0,0.2);color:var(--red);border:1px solid rgba(255,68,0,0.35);
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:800;transition:all 0.2s;}
+.confirm-yes:hover{background:rgba(255,68,0,0.3);}
+.confirm-no{flex:1;padding:12px;border-radius:10px;border:none;cursor:pointer;
+  background:rgba(255,255,255,0.06);color:var(--text2);border:1px solid rgba(255,255,255,0.08);
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:700;transition:all 0.2s;}
+.confirm-no:hover{background:rgba(255,255,255,0.1);}
+
+/* ═══════════════ TOAST ═══════════════ */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);
+  background:rgba(57,255,20,0.12);border:1px solid rgba(57,255,20,0.3);
+  color:var(--green);padding:7px 18px;border-radius:100px;
+  font-size:11px;font-weight:700;z-index:300;display:none;white-space:nowrap;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+#toast.show{display:block;animation:toast-in 0.2s ease-out;}
+@keyframes toast-in{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translate(-50%,0)}}
+#toast.warn{background:rgba(255,136,0,0.12);border-color:rgba(255,136,0,0.3);color:var(--orange);}
+#toast.err{background:rgba(255,68,0,0.12);border-color:rgba(255,68,0,0.3);color:var(--red);}
+#toast.info{background:rgba(0,207,255,0.12);border-color:rgba(0,207,255,0.3);color:var(--cyan);}
+
+/* ═══════════════ NO SUPPORT ═══════════════ */
+#no-support{display:none;position:fixed;inset:0;z-index:999;background:var(--bg);
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:30px;text-align:center;}
+#no-support.show{display:flex;}
+
+/* ═══════════════ MISC ═══════════════ */
+@keyframes slide-in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- NO SUPPORT -->
+<div id="no-support">
+  <div style="font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:var(--red);">MIC</div>
+  <div style="font-size:13px;color:var(--red);line-height:1.7;"><strong>Reconnaissance vocale non supportee.</strong><br>Utilisez <strong>Google Chrome</strong> sur Android ou tablette.</div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div>
+      <div class="logo-text">PGI &bull; MediumAssist Pro</div>
+      <div class="logo-sub">ClairvoyanceMedium.com — Frederick</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div id="status-pill" class="status-pill s-idle">
+      <div class="s-dot"></div>
+      <span id="status-txt">En veille</span>
+    </div>
+    <button class="hbtn" id="btn-settings-open" title="Parametres">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- SESSION BAR -->
+<div id="session-bar">
+  <div class="sbar-left">
+    <span id="sbar-timer" class="sbar-timer">00:00</span>
+    <span id="sbar-client" class="sbar-client">Consultation en cours</span>
+  </div>
+  <div class="sbar-right">
+    <button class="sbar-btn" id="sbar-pause" onclick="togglePause()">PAUSE</button>
+    <button class="sbar-btn" id="sbar-stop" onclick="confirmStop()">ARRETER</button>
+  </div>
+</div>
+
+<!-- CLIENT BANNER -->
+<div id="client-banner">
+  <div class="cb-left">
+    <div class="cb-avatar">CLT</div>
+    <div>
+      <div class="cb-name" id="cb-name-txt">—</div>
+      <div class="cb-detail" id="cb-detail-txt"></div>
+    </div>
+  </div>
+  <div class="cb-right">
+    <button class="cb-btn" onclick="openClientFile()">FICHE</button>
+    <button class="cb-close" onclick="deselectClient()">✕</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main id="main">
+  <div id="empty-state">
+    <div class="es-pgi">PGI</div>
+    <div class="es-title">Pret a la consultation</div>
+    <div class="es-sub">Selectionnez un client (optionnel), puis appuyez sur <strong>DEMARRER LA CONSULTATION</strong>.</div>
+  </div>
+
+  <div class="card" id="transcript-card" style="display:none">
+    <div class="clabel"><div class="clabel-dot"></div>TRANSCRIPTION EN DIRECT</div>
+    <div id="transcript-scroll"><div id="transcript-text"><span style="color:var(--text3);font-style:italic;font-size:11px">En attente de parole...</span></div></div>
+    <div id="transcript-interim"></div>
+  </div>
+
+  <div class="card" id="context-card">
+    <div id="context-text"></div>
+  </div>
+
+  <div class="card" id="suggestion-card" style="display:none">
+    <div class="clabel"><div class="clabel-dot"></div>DIS MAINTENANT</div>
+    <div id="suggestion-text" class="ph">En attente d'analyse...</div>
+  </div>
+
+  <div class="card" id="alert-card">
+    <div class="clabel"><div class="clabel-dot"></div>MISE EN GARDE</div>
+    <div id="alert-text"></div>
+  </div>
+
+  <div class="card" id="opp-card">
+    <div class="clabel"><div class="clabel-dot"></div>OPPORTUNITE DETECTEE</div>
+    <div class="opp-row"><div id="opp-service"></div><div id="opp-price"></div></div>
+    <div id="opp-why"></div>
+    <button id="btn-conv" onclick="loadConversion()">GENERER PHRASES DE CONVERSION &rarr;</button>
+  </div>
+
+  <div id="conv-panel">
+    <div class="clabel"><div class="clabel-dot"></div>PHRASES DE CONVERSION — CLIQUER POUR COPIER</div>
+    <div id="conv-phrases"></div>
+  </div>
+
+  <!-- MODULE RESULTS — injectes dynamiquement -->
+  <div id="module-results"></div>
+
+</main>
+
+<!-- ASSISTANCE A LA CONSULTATION -->
+<div id="assistance-bar">
+  <div class="qa-bar-label">ASSISTANCE A LA CONSULTATION</div>
+  <button class="qa-btn qa-1" onclick="quickAction('epate')">EPATE</button>
+  <button class="qa-btn qa-2" onclick="quickAction('question')">QUESTION</button>
+  <button class="qa-btn qa-3" onclick="quickAction('alerte')">ALERTE</button>
+  <button class="qa-btn qa-4" onclick="quickAction('service')">SERVICE</button>
+  <button class="qa-btn qa-5" onclick="quickAction('revelation')">REVELATION</button>
+  <button class="qa-btn qa-6" onclick="quickAction('energie')">ENERGIE</button>
+  <button class="qa-btn qa-7" onclick="openDOB()">DATE NAISS.</button>
+  <button class="qa-btn qa-8" onclick="openFreeText()">MA QUESTION</button>
+</div>
+
+<!-- MODULES -->
+<div id="module-strip">
+  <div class="mod-strip-label">MODULES</div>
+  <button class="mod-btn mb-tarot" onclick="openModule('tarot')">TAROT</button>
+  <button class="mod-btn mb-num" onclick="openModule('numerologie')">NUMEROLOGIE</button>
+  <button class="mod-btn mb-horoscope" onclick="openModule('horoscope')">HOROSCOPE</button>
+  <button class="mod-btn mb-astro" onclick="openModule('astrologie')">ASTROLOGIE</button>
+  <button class="mod-btn mb-ange" onclick="openModule('ange')">ANGE GARDIEN</button>
+  <button class="mod-btn mb-main" onclick="openModule('main')">LIGNE DE LA MAIN</button>
+  <button class="mod-btn mb-pendule" onclick="openModule('pendule')">PENDULE</button>
+  <button class="mod-btn mb-alertes" onclick="openModule('alertes')">ALERTES</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div id="footer-idle" class="fgroup">
+    <button id="btn-start" onclick="startConsultation()">
+      <span id="btn-start-dot" style="font-size:10px;font-weight:900;">&#9679;</span>
+      <span id="btn-start-txt">DEMARRER LA CONSULTATION</span>
+    </button>
+    <button class="fbtn" id="btn-clients" onclick="openClientOverlay()" title="Clients">
+      <div class="fbt-label">CLIENT</div>
+    </button>
+    <button class="fbtn" id="btn-email" onclick="openEmailOverlay()" title="Email">
+      <div class="fbt-label">EMAIL</div>
+    </button>
+    <button class="fbtn" id="btn-rapports" onclick="openRapportsOverlay()" title="Rapports">
+      <div class="fbt-label">BILAN</div>
+    </button>
+    <button class="fbtn" id="btn-raz" onclick="confirmClear()" title="Effacer session">
+      <div class="fbt-label">RAZ</div>
+    </button>
+  </div>
+  <div id="footer-active" class="fgroup" style="display:none">
+    <button class="fbtn" id="btn-force" onclick="forceSuggest()" title="Forcer une suggestion">
+      <div class="fbt-label">FORCE</div>
+    </button>
+    <button class="fbtn" id="btn-clients-active" onclick="openClientOverlay()" title="Client">
+      <div class="fbt-label" style="color:var(--purple)">CLIENT</div>
+    </button>
+    <button class="fbtn" id="btn-email-active" onclick="openEmailOverlay()" title="Email">
+      <div class="fbt-label" style="color:var(--teal)">EMAIL</div>
+    </button>
+    <button class="fbtn" id="btn-rapports-active" onclick="openRapportsOverlay()" title="Rapports">
+      <div class="fbt-label" style="color:var(--yellow)">BILAN</div>
+    </button>
+    <button class="fbtn" id="btn-raz-active" onclick="confirmClear()" title="Effacer transcription">
+      <div class="fbt-label">RAZ</div>
+    </button>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════════
+     OVERLAYS & DRAWERS
+══════════════════════════════════════════════ -->
+
+<!-- SETTINGS -->
+<div class="overlay" id="settings-overlay" onclick="overlayClose(event,'settings-overlay')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--cyan)">CONFIGURATION</div>
+      <button class="dbtn-close" onclick="closeOverlay('settings-overlay')">FERMER ✕</button>
+    </div>
+    <div class="section-title">INTELLIGENCE ARTIFICIELLE</div>
+    <div class="fg">
+      <div class="fl">Fournisseur IA</div>
+      <select id="s-provider" class="fsel" onchange="updateProviderUI()">
+        <option value="groq">Groq — GRATUIT (ultra-rapide, recommande)</option>
+        <option value="openrouter">OpenRouter — GRATUIT (multi-modeles)</option>
+        <option value="openai">OpenAI (ChatGPT — payant)</option>
+        <option value="anthropic">Anthropic (Claude — payant)</option>
+        <option value="custom">URL personnalisee</option>
+      </select>
+    </div>
+    <div class="fg">
+      <div class="fl">Cle API</div>
+      <div class="api-row">
+        <input type="password" id="s-apikey" class="fi" placeholder="gsk_... ou sk-...">
+        <button class="eye-btn" onclick="toggleEye('s-apikey')">VOIR</button>
+      </div>
+      <div class="fhint" id="s-provider-hint">Cle gratuite sur <strong style="color:var(--cyan)">console.groq.com</strong> &rarr; API Keys (sans CB)</div>
+    </div>
+    <div class="fg" id="s-model-group">
+      <div class="fl">Modele IA (changeable a tout moment)</div>
+      <select id="s-model" class="fsel"></select>
+      <div class="fhint">Modeles gratuits marques GRATUIT. Pour une consultation d'1h, utilisez un modele 128k context minimum.</div>
+    </div>
+    <div class="fg" id="s-custom-group" style="display:none">
+      <div class="fl">URL API personnalisee</div>
+      <input type="text" id="s-custom-url" class="fi" placeholder="https://...">
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">CLOUDFLARE WORKER (synchronisation multi-appareils)</div>
+    <div class="fg">
+      <div class="fl">URL du Worker</div>
+      <input type="text" id="s-worker-url" class="fi" placeholder="https://pgi-mediumassist.votreuser.workers.dev">
+    </div>
+    <div class="fg">
+      <div class="fl">Token secret</div>
+      <div class="api-row">
+        <input type="password" id="s-worker-token" class="fi" placeholder="votre_token_secret">
+        <button class="eye-btn" onclick="toggleEye('s-worker-token')">VOIR</button>
+      </div>
+      <div class="fhint">Laissez vide si Worker non configure — donnees stockees localement.</div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">COMPORTEMENT DE L'ASSISTANT</div>
+    <div class="fg">
+      <div class="fl">Instructions complementaires</div>
+      <textarea id="s-extra" class="fta" style="min-height:70px" placeholder="Ex: Ne jamais paraitre presse de vendre. Toujours commencer par de l'empathie..."></textarea>
+    </div>
+    <div class="fg">
+      <div class="fl">Services et tarifs</div>
+      <textarea id="s-services" class="fta" style="min-height:80px"></textarea>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">EMPREINTE VOCALE</div>
+    <div class="fg">
+      <div class="fhint" id="s-voice-status-txt">Aucun profil vocal enregistre.</div>
+      <button class="btn-secondary" style="margin-top:7px" onclick="openVoiceOverlay()">ENREGISTRER / METTRE A JOUR MA VOIX</button>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">LANGUE DE RECONNAISSANCE</div>
+    <div class="fg">
+      <select id="s-lang" class="fsel">
+        <option value="fr-FR">Francais — France</option>
+        <option value="fr-BE">Francais — Belgique</option>
+        <option value="fr-CH">Francais — Suisse</option>
+        <option value="fr-CA">Francais — Canada</option>
+        <option value="en-US">English — United States</option>
+        <option value="en-GB">English — United Kingdom</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="saveSettings()">SAUVEGARDER</button>
+    <button class="btn-secondary" onclick="resetPrompt()">Reinitialiser le prompt systeme</button>
+  </div>
+</div>
+
+<!-- VOICE ENROLLMENT -->
+<div class="overlay" id="voice-overlay" onclick="overlayClose(event,'voice-overlay')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--pink)">EMPREINTE VOCALE</div>
+      <button class="dbtn-close" onclick="closeOverlay('voice-overlay')">FERMER ✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:14px;">
+      Enregistrez votre voix une seule fois — elle sera memorisee definitivement.
+      L'assistant distinguera votre voix de celle de vos clients.<br><br>
+      Parlez naturellement pendant <strong style="color:var(--pink)">15 secondes</strong>.
+    </p>
+    <div class="voice-ring" id="voice-ring">MIC</div>
+    <div id="voice-progress"><div id="voice-progress-bar"></div></div>
+    <div id="voice-status" style="color:var(--text2);font-size:12px;text-align:center;margin:8px 0;"></div>
+    <div class="voice-playback" id="voice-playback">
+      <div class="voice-play-label">ECOUTER MON ENREGISTREMENT</div>
+      <audio id="voice-audio" controls></audio>
+    </div>
+    <button class="btn-primary" style="background:rgba(255,51,153,0.2);border-color:rgba(255,51,153,0.4);color:var(--pink);margin-top:10px;" id="btn-voice-record" onclick="startVoiceEnrollment()">COMMENCER L'ENREGISTREMENT</button>
+    <button class="btn-secondary" id="btn-voice-validate" onclick="validateVoiceProfile()" style="display:none;background:rgba(57,255,20,0.1);border-color:rgba(57,255,20,0.25);color:var(--green);">VALIDER ET SAUVEGARDER</button>
+    <button class="btn-secondary btn-danger" id="btn-voice-delete" onclick="confirmDeleteVoice()" style="display:none;margin-top:6px;">SUPPRIMER MON PROFIL VOCAL</button>
+  </div>
+</div>
+
+<!-- CLIENTS OVERLAY -->
+<div class="overlay" id="client-overlay" onclick="overlayClose(event,'client-overlay')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--purple)">GESTION CLIENTS</div>
+      <button class="dbtn-close" onclick="closeOverlay('client-overlay')">FERMER ✕</button>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-list-btn" onclick="showClientTab('list')">MES CLIENTS</button>
+      <button class="tab-btn" id="tab-new-btn" onclick="showClientTab('new')">NOUVEAU</button>
+    </div>
+    <div id="client-tab-list">
+      <input type="text" class="search-bar" id="client-search" placeholder="Rechercher par prenom, date de naissance..." oninput="filterClients()">
+      <div id="client-list-container"><div style="text-align:center;color:var(--text3);font-size:12px;padding:20px">Chargement...</div></div>
+    </div>
+    <div id="client-tab-new" style="display:none">
+      <div class="fg"><div class="fl">Prenom *</div><input type="text" id="nc-name" class="fi" placeholder="Marie"></div>
+      <div class="fg"><div class="fl">Telephone</div><input type="text" id="nc-phone" class="fi" placeholder="06..."></div>
+      <div class="fg"><div class="fl">Date de naissance (JJ/MM/AAAA)</div><input type="text" id="nc-dob" class="fi" placeholder="15/03/1985" maxlength="10" oninput="formatDOBInput(this)"></div>
+      <div class="fg"><div class="fl">Signe astrologique</div><input type="text" id="nc-sign" class="fi" placeholder="Balance, Scorpion..."></div>
+      <div class="fg"><div class="fl">Profil — notes initiales</div><textarea id="nc-profile" class="fta" style="min-height:65px" placeholder="Personnalite, situation, sujets recurrents..."></textarea></div>
+      <button class="btn-primary" style="background:rgba(204,68,255,0.2);border-color:rgba(204,68,255,0.4);color:var(--purple)" onclick="createClient()">CREER LE CLIENT</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT FILE OVERLAY -->
+<div class="overlay" id="clientfile-overlay" onclick="overlayClose(event,'clientfile-overlay')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--purple)" id="cf-title">FICHE CLIENT</div>
+      <button class="dbtn-close" onclick="closeOverlay('clientfile-overlay')">FERMER ✕</button>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active" id="cft-info-btn" onclick="showCFTab('info')">INFOS</button>
+      <button class="tab-btn" id="cft-notes-btn" onclick="showCFTab('notes')">NOTES</button>
+      <button class="tab-btn" id="cft-hist-btn" onclick="showCFTab('hist')">HISTORIQUE</button>
+    </div>
+    <div id="cf-tab-info">
+      <div class="fg"><div class="fl">Prenom</div><input type="text" id="cf-name" class="fi"></div>
+      <div class="fg"><div class="fl">Telephone</div><input type="text" id="cf-phone" class="fi"></div>
+      <div class="fg"><div class="fl">Date de naissance</div><input type="text" id="cf-dob" class="fi" maxlength="10" oninput="formatDOBInput(this)"></div>
+      <div class="fg"><div class="fl">Signe astrologique</div><input type="text" id="cf-sign" class="fi"></div>
+      <button class="btn-primary" style="background:rgba(204,68,255,0.2);border-color:rgba(204,68,255,0.4);color:var(--purple)" onclick="saveClientInfo()">SAUVEGARDER</button>
+      <button class="btn-secondary btn-danger" onclick="confirmDeleteClient()">SUPPRIMER CE CLIENT</button>
+    </div>
+    <div id="cf-tab-notes" style="display:none">
+      <div class="fg"><div class="fl">Profil et informations</div><textarea id="cf-profile" class="fta" style="min-height:90px" placeholder="Caractere, croyances, situation de vie..."></textarea></div>
+      <div class="fg"><div class="fl">Notes privees</div><textarea id="cf-notes" class="fta" style="min-height:70px" placeholder="Observations personnelles..."></textarea></div>
+      <button class="btn-primary" style="background:rgba(204,68,255,0.2);border-color:rgba(204,68,255,0.4);color:var(--purple)" onclick="saveClientNotes()">SAUVEGARDER</button>
+    </div>
+    <div id="cf-tab-hist" style="display:none">
+      <div id="cf-hist-container"><div style="text-align:center;color:var(--text3);font-size:12px;padding:20px">Aucune consultation.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- RAPPORT OVERLAY -->
+<div class="overlay" id="rapport-overlay" onclick="overlayClose(event,'rapport-overlay')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--teal)" id="rapport-title">RAPPORT DE CONSULTATION</div>
+      <button class="dbtn-close" onclick="closeOverlay('rapport-overlay')">FERMER ✕</button>
+    </div>
+    <div id="rapport-loading" style="text-align:center;padding:30px;color:var(--text3);font-size:12px;">Generation du rapport en cours...</div>
+    <div id="rapport-content" style="display:none">
+      <div class="report-display" id="rapport-display"></div>
+      <div style="display:flex;gap:7px;margin-top:10px;">
+        <button class="btn-primary" style="background:rgba(0,255,204,0.12);border-color:rgba(0,255,204,0.3);color:var(--teal)" onclick="copyReport()">COPIER LE RAPPORT</button>
+        <button class="btn-primary" style="background:rgba(255,208,0,0.1);border-color:rgba(255,208,0,0.25);color:var(--yellow)" onclick="downloadReport()">TELECHARGER</button>
+      </div>
+      <button class="btn-secondary" id="btn-save-rapport" onclick="saveReportToClient()">SAUVEGARDER DANS LA FICHE CLIENT</button>
+    </div>
+  </div>
+</div>
+
+<!-- RAPPORTS HISTORIQUE OVERLAY -->
+<div class="overlay" id="rapports-overlay" onclick="overlayClose(event,'rapports-overlay')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--yellow)">HISTORIQUE DES RAPPORTS</div>
+      <button class="dbtn-close" onclick="closeOverlay('rapports-overlay')">FERMER ✕</button>
+    </div>
+    <input type="text" class="search-bar" id="rapport-search" placeholder="Rechercher par prenom ou date..." oninput="filterRapports()">
+    <div id="rapports-list"><div style="text-align:center;color:var(--text3);font-size:12px;padding:20px">Aucun rapport sauvegarde.</div></div>
+  </div>
+</div>
+
+<!-- EMAIL OVERLAY -->
+<div class="overlay" id="email-overlay" onclick="overlayClose(event,'email-overlay')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--teal)">VOYANCE PAR EMAIL</div>
+      <button class="dbtn-close" onclick="closeOverlay('email-overlay')">FERMER ✕</button>
+    </div>
+    <!-- Client selector for email -->
+    <div class="fg">
+      <div class="fl">Client concerne (optionnel)</div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <div id="email-client-name" style="flex:1;font-size:13px;color:var(--text2);padding:9px 11px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r-sm);">Aucun client selectionne</div>
+        <button class="eye-btn" onclick="openEmailClientSearch()">CHOISIR</button>
+      </div>
+      <div class="fhint">Si un client est selectionne, l'IA exploite son historique complet pour une reponse coherente.</div>
+    </div>
+    <div class="divider"></div>
+    <div class="fg">
+      <div class="fl" style="color:var(--teal)">MES DIRECTIVES — style de reponse</div>
+      <textarea id="email-directives" class="fta" style="min-height:80px;border-color:rgba(0,255,204,0.15);"
+        placeholder="Ex: Ton chaleureux et spirituel. Proposer une consultation si la question est complexe. Signer 'Frederick — Guide Spirituel ClairvoyanceMedium.com'. Ne jamais donner de conseils medicaux."
+        oninput="saveEmailDirectives()"></textarea>
+      <div class="fhint" style="color:rgba(0,255,204,0.4)">Sauvegardees automatiquement — persistantes entre les sessions.</div>
+    </div>
+    <div class="divider"></div>
+    <div class="fg">
+      <div class="fl">QUESTION DU CLIENT PAR EMAIL</div>
+      <textarea id="email-question" class="fta" style="min-height:90px" placeholder="Collez ici la question recue par email..."></textarea>
+    </div>
+    <button id="btn-gen-email" class="btn-primary" style="background:rgba(0,255,204,0.12);border-color:rgba(0,255,204,0.3);color:var(--teal)" onclick="generateEmailResponse()">GENERER LA REPONSE</button>
+    <div id="email-response-section" style="display:none;margin-top:12px;">
+      <div class="divider"></div>
+      <div class="fl" style="color:var(--teal);margin-bottom:7px;">REPONSE A ENVOYER</div>
+      <div id="email-response-text" style="background:rgba(0,255,204,0.04);border:1px solid rgba(0,255,204,0.15);border-radius:var(--r);padding:13px;font-size:13px;line-height:1.7;color:var(--text);white-space:pre-wrap;margin-bottom:9px;max-height:260px;overflow-y:auto;"></div>
+      <button class="btn-primary" style="background:rgba(0,255,204,0.12);border-color:rgba(0,255,204,0.3);color:var(--teal)" onclick="copyEmailResponse()">COPIER LA REPONSE</button>
+      <button class="btn-secondary" onclick="saveEmailConsultation()">SAUVEGARDER DANS LA FICHE CLIENT</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL CLIENT SEARCH MINI -->
+<div class="mini-overlay" id="email-client-overlay" onclick="miniClose(event,'email-client-overlay')">
+  <div class="mini-box" style="max-height:80vh;overflow-y:auto;">
+    <div class="mini-title" style="color:var(--purple)">CHOISIR UN CLIENT <button class="mini-close" onclick="closeOverlay('email-client-overlay')">✕</button></div>
+    <input type="text" class="search-bar" id="email-client-search" placeholder="Prenom ou date de naissance..." oninput="filterEmailClients()">
+    <div id="email-client-list"></div>
+  </div>
+</div>
+
+<!-- MODULE: TAROT -->
+<div class="overlay" id="mod-tarot" onclick="overlayClose(event,'mod-tarot')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--gold)">TIRAGE DE TAROT</div>
+      <button class="dbtn-close" onclick="closeOverlay('mod-tarot')">FERMER ✕</button>
+    </div>
+    <div class="fg">
+      <div class="fl">Jeu de tarot</div>
+      <select id="tarot-deck" class="fsel" onchange="updateTarotDeck()">
+        <option value="marseille">Tarot de Marseille (78 cartes)</option>
+        <option value="rider">Tarot Rider-Waite (78 cartes)</option>
+        <option value="thoth">Tarot Thoth — Crowley (78 cartes)</option>
+        <option value="osho">Tarot Osho Zen (79 cartes)</option>
+        <option value="belline">Oracle de Belline (52 cartes)</option>
+      </select>
+    </div>
+    <div class="fg">
+      <div class="fl">Type de tirage</div>
+      <div id="tarot-spread-btns" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;"></div>
+    </div>
+    <div id="tarot-instruction" class="tarot-instruction" style="display:none"></div>
+    <div class="fg" id="tarot-cards-section" style="display:none">
+      <div class="fl">Cartes tirees (cliquez pour selectionner/deselectionner)</div>
+      <div class="tarot-cards-grid" id="tarot-cards-grid"></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:5px;" id="tarot-selection-info"></div>
+    </div>
+    <button id="btn-tarot-interpret" class="btn-primary" style="background:rgba(255,170,0,0.15);border-color:rgba(255,170,0,0.35);color:var(--gold);display:none" onclick="interpretTarot()">INTERPRETER CE TIRAGE</button>
+  </div>
+</div>
+
+<!-- MODULE: NUMEROLOGIE -->
+<div class="overlay" id="mod-numerologie" onclick="overlayClose(event,'mod-numerologie')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--purple)">NUMEROLOGIE</div>
+      <button class="dbtn-close" onclick="closeOverlay('mod-numerologie')">FERMER ✕</button>
+    </div>
+    <div class="fg"><div class="fl">Prenom complet</div><input type="text" id="num-prenom" class="fi" placeholder="Marie-Claire"></div>
+    <div class="fg"><div class="fl">Nom de famille (optionnel)</div><input type="text" id="num-nom" class="fi" placeholder="Dupont"></div>
+    <div class="fg">
+      <div class="fl">Date de naissance</div>
+      <input type="text" id="num-dob" class="fi" placeholder="15/03/1985" maxlength="10" oninput="formatDOBInput(this)"
+        style="font-size:20px;font-weight:700;letter-spacing:3px;text-align:center;font-family:'JetBrains Mono',monospace">
+    </div>
+    <div id="num-calc-display" style="display:none;margin-bottom:12px;">
+      <div class="fl" style="margin-bottom:8px">CALCULS NUMEROLOGIQUES</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;" id="num-badges"></div>
+    </div>
+    <button class="btn-primary" style="background:rgba(204,68,255,0.15);border-color:rgba(204,68,255,0.35);color:var(--purple)" onclick="runNumerologie()">ANALYSER</button>
+  </div>
+</div>
+
+<!-- MODULE: HOROSCOPE -->
+<div class="overlay" id="mod-horoscope" onclick="overlayClose(event,'mod-horoscope')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--yellow)">HOROSCOPE</div>
+      <button class="dbtn-close" onclick="closeOverlay('mod-horoscope')">FERMER ✕</button>
+    </div>
+    <div class="fg">
+      <div class="fl">Signe astrologique</div>
+      <select id="horoscope-sign" class="fsel">
+        <option value="">Selectionner un signe...</option>
+        <option>Belier</option><option>Taureau</option><option>Gemeaux</option><option>Cancer</option>
+        <option>Lion</option><option>Vierge</option><option>Balance</option><option>Scorpion</option>
+        <option>Sagittaire</option><option>Capricorne</option><option>Verseau</option><option>Poissons</option>
+      </select>
+    </div>
+    <div class="fg">
+      <div class="fl">Periode</div>
+      <select id="horoscope-period" class="fsel">
+        <option value="jour">Aujourd'hui</option>
+        <option value="semaine">Cette semaine</option>
+        <option value="mois">Ce mois</option>
+        <option value="general">Lecture generale</option>
+      </select>
+    </div>
+    <button class="btn-primary" style="background:rgba(255,208,0,0.12);border-color:rgba(255,208,0,0.3);color:var(--yellow)" onclick="runHoroscope()">GENERER L'HOROSCOPE</button>
+  </div>
+</div>
+
+<!-- MODULE: ASTROLOGIE -->
+<div class="overlay" id="mod-astrologie" onclick="overlayClose(event,'mod-astrologie')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--cyan)">ASTROLOGIE APPROFONDIE</div>
+      <button class="dbtn-close" onclick="closeOverlay('mod-astrologie')">FERMER ✕</button>
+    </div>
+    <div class="fg"><div class="fl">Date de naissance</div><input type="text" id="astro-dob" class="fi" placeholder="15/03/1985" maxlength="10" oninput="formatDOBInput(this)"></div>
+    <div class="fg"><div class="fl">Heure de naissance (optionnel)</div><input type="text" id="astro-time" class="fi" placeholder="14:30"></div>
+    <div class="fg"><div class="fl">Lieu de naissance (optionnel)</div><input type="text" id="astro-place" class="fi" placeholder="Paris, France"></div>
+    <div class="fg">
+      <div class="fl">Focus de l'analyse</div>
+      <select id="astro-focus" class="fsel">
+        <option value="global">Theme natal complet</option>
+        <option value="amour">Amour et relations</option>
+        <option value="travail">Travail et carriere</option>
+        <option value="transits">Transits actuels et previsions</option>
+        <option value="karma">Karma et vie anterieure</option>
+        <option value="forces">Forces et faiblesses natales</option>
+      </select>
+    </div>
+    <button class="btn-primary" style="background:rgba(0,207,255,0.12);border-color:rgba(0,207,255,0.3);color:var(--cyan)" onclick="runAstrologie()">GENERER L'ANALYSE ASTROLOGIQUE</button>
+  </div>
+</div>
+
+<!-- MODULE: ANGE GARDIEN -->
+<div class="overlay" id="mod-ange" onclick="overlayClose(event,'mod-ange')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:#fff">MESSAGE DE L'ANGE GARDIEN</div>
+      <button class="dbtn-close" onclick="closeOverlay('mod-ange')">FERMER ✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:14px">
+      Le message sera genere en lien avec la consultation en cours ou l'historique du client selectionne. Il sera unique, inspire et exploitable immediatement.
+    </p>
+    <div class="fg">
+      <div class="fl">Orientation du message (optionnel)</div>
+      <select id="ange-focus" class="fsel">
+        <option value="general">Message general de guidance</option>
+        <option value="amour">Amour et relations</option>
+        <option value="protection">Protection et sécurite energetique</option>
+        <option value="guerison">Guerison et reconfort</option>
+        <option value="avenir">Signes sur l'avenir</option>
+        <option value="courage">Force et courage</option>
+      </select>
+    </div>
+    <button class="btn-primary" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:#fff" onclick="runAngeGardien()">RECEVOIR LE MESSAGE</button>
+  </div>
+</div>
+
+<!-- MODULE: LIGNE DE LA MAIN -->
+<div class="overlay" id="mod-main" onclick="overlayClose(event,'mod-main')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--pink)">LECTURE DE LA MAIN</div>
+      <button class="dbtn-close" onclick="closeOverlay('mod-main')">FERMER ✕</button>
+    </div>
+    <div id="main-vision-warning" style="display:none;background:rgba(255,136,0,0.08);border:1px solid rgba(255,136,0,0.2);border-radius:var(--r);padding:12px;font-size:12px;color:#ffaa66;line-height:1.6;margin-bottom:12px">
+      La lecture d'image necessite un modele avec vision. Utilisez GPT-4o, Claude 3 ou Gemini dans les parametres.
+    </div>
+    <div class="fg">
+      <div class="fl">Photo de la main du client</div>
+      <input type="file" id="main-photo" accept="image/*" class="fi" style="padding:8px;" onchange="previewMainPhoto()">
+      <div id="main-photo-preview" style="display:none;margin-top:8px;">
+        <img id="main-img" style="width:100%;max-height:180px;object-fit:cover;border-radius:var(--r-sm);border:1px solid var(--border)">
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl">Focus de la lecture</div>
+      <select id="main-focus" class="fsel">
+        <option value="global">Lecture complete</option>
+        <option value="amour">Lignes d'amour et de coeur</option>
+        <option value="destin">Ligne de destin</option>
+        <option value="vie">Ligne de vie et vitalite</option>
+        <option value="tete">Ligne de tete et intelligence</option>
+      </select>
+    </div>
+    <button class="btn-primary" style="background:rgba(255,51,153,0.15);border-color:rgba(255,51,153,0.3);color:var(--pink)" onclick="runLigneDeLaMain()">ANALYSER LA MAIN</button>
+  </div>
+</div>
+
+<!-- MODULE: PENDULE -->
+<div class="overlay" id="mod-pendule" onclick="overlayClose(event,'mod-pendule')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--teal)">PENDULE OUI / NON</div>
+      <button class="dbtn-close" onclick="closeOverlay('mod-pendule')">FERMER ✕</button>
+    </div>
+    <div class="pendule-wrap">
+      <div class="pendule-container" id="pendule-anim">
+        <div class="pendule-line"></div>
+        <div class="pendule-bob"></div>
+      </div>
+      <div id="pendule-answer-display" style="min-height:40px"></div>
+    </div>
+    <div class="fg">
+      <div class="fl">Question a poser au pendule</div>
+      <input type="text" id="pendule-question" class="fi" placeholder="Est-ce que son ex l'aime encore ?" maxlength="150">
+    </div>
+    <button class="btn-primary" style="background:rgba(0,255,204,0.12);border-color:rgba(0,255,204,0.3);color:var(--teal)" onclick="runPendule()">CONSULTER LE PENDULE</button>
+    <div id="pendule-result" style="display:none;margin-top:12px;">
+      <div class="divider"></div>
+      <div id="pendule-explanation" style="font-size:13px;line-height:1.7;color:var(--text2);"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODULE: ALERTES -->
+<div class="overlay" id="mod-alertes" onclick="overlayClose(event,'mod-alertes')">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <div class="dheader">
+      <div class="drawer-title" style="color:var(--red)">ANALYSE ET ALERTES</div>
+      <button class="dbtn-close" onclick="closeOverlay('mod-alertes')">FERMER ✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:14px">
+      Analyse intelligente de la consultation en cours — points de vigilance, incoherences, sujets a approfondir, recommandations pour mieux conduire l'echange.
+    </p>
+    <button class="btn-primary" style="background:rgba(255,68,0,0.15);border-color:rgba(255,68,0,0.3);color:var(--red)" onclick="runAlertes()">LANCER L'ANALYSE GLOBALE</button>
+    <div id="alertes-result" style="display:none;margin-top:12px;">
+      <div class="divider"></div>
+      <div id="alertes-content" style="font-size:13px;line-height:1.7;color:var(--text);"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DOB MINI-OVERLAY -->
+<div class="mini-overlay" id="dob-overlay" onclick="miniClose(event,'dob-overlay')">
+  <div class="mini-box">
+    <div class="mini-title" style="color:var(--pink)">ANALYSE DATE DE NAISSANCE <button class="mini-close" onclick="closeOverlay('dob-overlay')">✕</button></div>
+    <div class="fg">
+      <div class="fl">Date de naissance</div>
+      <input type="text" id="dob-input" class="fi" placeholder="15/03/1985" maxlength="10"
+        style="font-size:22px;font-weight:700;letter-spacing:3px;text-align:center;font-family:'JetBrains Mono',monospace"
+        oninput="formatDOBInput(this)">
+      <div class="fhint">Tapez JJ/MM/AAAA — les / s'ajoutent automatiquement</div>
+    </div>
+    <div class="fg"><div class="fl">Prenom (optionnel)</div><input type="text" id="dob-name" class="fi" placeholder="Marie"></div>
+    <button class="btn-primary" style="background:rgba(255,51,153,0.15);border-color:rgba(255,51,153,0.3);color:var(--pink)" onclick="runDOBAnalysis()">ANALYSER</button>
+  </div>
+</div>
+
+<!-- FREE TEXT MINI-OVERLAY -->
+<div class="mini-overlay" id="freetext-overlay" onclick="miniClose(event,'freetext-overlay')">
+  <div class="mini-box">
+    <div class="mini-title" style="color:var(--orange)">MA QUESTION DIRECTE <button class="mini-close" onclick="closeOverlay('freetext-overlay')">✕</button></div>
+    <div class="fg"><textarea id="ft-input" class="fta" style="min-height:80px" placeholder="Ex: Comment conclure cette consultation ? Que dire pour rassurer ? Propose une phrase percutante sur son travail..."></textarea></div>
+    <button class="btn-primary" style="background:rgba(255,136,0,0.15);border-color:rgba(255,136,0,0.3);color:var(--orange)" onclick="runFreeText()">REPONDRE</button>
+  </div>
+</div>
+
+<!-- CONFIRMATION DIALOG -->
+<div class="overlay center" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirm-title">Confirmation</div>
+    <div class="confirm-msg" id="confirm-msg">Etes-vous certain ?</div>
+    <div class="confirm-buttons">
+      <button class="confirm-no" onclick="confirmNo()">ANNULER</button>
+      <button class="confirm-yes" id="confirm-yes-btn" onclick="confirmYes()">CONFIRMER</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════
+   SECTION 1 — CONSTANTES
+═══════════════════════════════════════════ */
+const DEFAULT_SYSTEM_PROMPT = `Tu es le souffleur personnel de Frederick, medium et guide spirituel professionnel depuis plus de 25 ans, fondateur de ClairvoyanceMedium.com.
+
+TON ROLE :
+Frederick est en appel telephonique avec un client. Tu analyses la transcription en temps reel et fournis UNE reponse parfaite, prete a etre prononcee immediatement.
+
+PERSONNALITE DE FREDERICK :
+• Voix posee, mysterieuse, enveloppante — inspire confiance et profondeur immediatement
+• Il ressent les choses AVANT que la personne les finisse de formuler
+• Il utilise : "je ressens...", "je percois clairement...", "les energies m'indiquent...", "je vois...", "quelque chose me parvient a votre sujet...", "il y a quelque chose que vous ne me dites pas encore..."
+• Il cree l'effet waouh : details precis et inattendus, tires de la transcription (prenoms, chiffres, couleurs, dates)
+• Il pose des questions impossibles a deviner : "Je percois le chiffre 7 — est-ce qu'il revient dans votre vie ?"
+• Il n'est JAMAIS presse, JAMAIS commercial, JAMAIS artificiel
+• Il relie toujours ses perceptions a l'etat emotionnel profond de la personne
+• Quand il detecte un blocage ou danger : il le nomme franchement, avec gravite et bienveillance
+
+ANALYSE OBLIGATOIRE AVANT CHAQUE REPONSE :
+1. Quel est le VRAI probleme emotionnel sous-jacent ?
+2. Niveau de detresse ? (fort = ton grave / faible = serein)
+3. Mots-cles exploitables dans la transcription ? → les reutiliser pour l'effet waouh
+4. Etape naturelle de la consultation ? (explorer / approfondir / rassurer / reveler / mettre en garde / conclure / proposer)
+5. Signe de blocage energetique, envoutement, manipulation exterieure ? → le signaler
+
+DOMAINES (maitrise totale) :
+Amour et Relations, Rupture et Retour ex, Trahison, Travail et Carriere, Argent et Blocages financiers, Famille et Entourage toxique, Deuil et Communication avec les defunts, Envoutement et Protection, Magie Blanche et Rouge, Astrologie et Theme natal, Numerologie, Tarot et Cartomancie, Reves et Symboles, Karma et Vies anterieures, Clairvoyance et Clairsentience
+
+FORMAT STRICT — JSON UNIQUEMENT — sans markdown, sans backtick :
+{
+  "suggestion": "La phrase complete et naturelle (2-4 phrases) que Frederick prononce maintenant. Effet waouh obligatoire. Vocabulaire medium authentique. Integre si possible un detail precis tire de la transcription.",
+  "contexte": "Ce que Frederick percoit en 8 mots max",
+  "alerte": null,
+  "opportunite": null
+}
+
+Si mise en garde pertinente :
+"alerte": "La mise en garde precise et percutante"
+
+Si opportunite de service detectee :
+"opportunite": {"service": "nom exact du service", "prix": "montant euro", "pourquoi": "raison precise en 1 phrase"}`;
+
+const DEFAULT_SERVICES = `• Consultation telephone : 15 euros/10min — 22 euros/20min
+• Consultation email : des 6 euros
+• Rituel Magie Rouge — Retour Affectif a distance : 250 euros
+• Desenvoutement spirituel
+• Magie Blanche — protection, chance, harmonie
+• Dialogue avec un defunt
+• Voyance par photo
+• Voyance par pendule
+• Horoscope personnalise
+• Compatibilite amoureuse`;
+
+const MODELS = {
+  groq: [
+    {v:'llama-3.3-70b-versatile',l:'Llama 3.3 70B — GRATUIT (128k context, recommande)'},
+    {v:'llama-3.1-70b-versatile',l:'Llama 3.1 70B — GRATUIT (128k context)'},
+    {v:'llama-3.1-8b-instant',l:'Llama 3.1 8B — GRATUIT (tres rapide)'},
+    {v:'mixtral-8x7b-32768',l:'Mixtral 8x7B — GRATUIT (32k context)'},
+    {v:'gemma2-9b-it',l:'Gemma 2 9B — GRATUIT'},
+  ],
+  openrouter: [
+    {v:'meta-llama/llama-3.3-70b-instruct:free',l:'Llama 3.3 70B — GRATUIT (128k)'},
+    {v:'deepseek/deepseek-r1:free',l:'DeepSeek R1 — GRATUIT (puissant, raisonnement)'},
+    {v:'deepseek/deepseek-chat:free',l:'DeepSeek V3 — GRATUIT (128k)'},
+    {v:'google/gemini-2.0-flash-exp:free',l:'Gemini 2.0 Flash — GRATUIT (1M context, VISION)'},
+    {v:'google/gemma-3-27b-it:free',l:'Gemma 3 27B — GRATUIT'},
+    {v:'mistralai/mistral-7b-instruct:free',l:'Mistral 7B — GRATUIT'},
+    {v:'meta-llama/llama-3.1-8b-instruct:free',l:'Llama 3.1 8B — GRATUIT'},
+    {v:'openai/gpt-4o',l:'GPT-4o — payant (vision, tres puissant)'},
+    {v:'openai/gpt-4o-mini',l:'GPT-4o Mini — payant (rapide)'},
+    {v:'openai/gpt-4.5-preview',l:'GPT-4.5 — payant (nouvelle generation)'},
+    {v:'anthropic/claude-3.5-sonnet',l:'Claude 3.5 Sonnet — payant (excellent, vision)'},
+    {v:'anthropic/claude-3.5-haiku',l:'Claude 3.5 Haiku — payant (rapide, vision)'},
+    {v:'anthropic/claude-3-opus',l:'Claude 3 Opus — payant (le plus puissant)'},
+    {v:'google/gemini-pro-1.5',l:'Gemini Pro 1.5 — payant (1M context)'},
+  ],
+  openai: [
+    {v:'gpt-4o',l:'GPT-4o — le plus puissant (vision)'},
+    {v:'gpt-4o-mini',l:'GPT-4o Mini — rapide et economique'},
+    {v:'gpt-4-turbo',l:'GPT-4 Turbo — 128k context'},
+    {v:'gpt-4.5-preview',l:'GPT-4.5 — nouvelle generation'},
+    {v:'gpt-3.5-turbo',l:'GPT-3.5 Turbo — economique'},
+  ],
+  anthropic: [
+    {v:'claude-opus-4-5',l:'Claude Opus 4.5 — ultra puissant'},
+    {v:'claude-sonnet-4-5',l:'Claude Sonnet 4.5 — excellent rapport qualite/vitesse'},
+    {v:'claude-3-5-sonnet-20241022',l:'Claude 3.5 Sonnet — tres puissant (vision)'},
+    {v:'claude-3-5-haiku-20241022',l:'Claude 3.5 Haiku — rapide (vision)'},
+    {v:'claude-3-opus-20240229',l:'Claude 3 Opus — tres puissant'},
+  ],
+  custom: [{v:'custom',l:'Modele personnalise'}]
+};
+
+const PROVIDER_HINTS = {
+  groq:      'Cle gratuite sur <strong style="color:var(--cyan)">console.groq.com</strong> → API Keys (sans CB)',
+  openrouter:'Cle gratuite sur <strong style="color:var(--cyan)">openrouter.ai</strong> → Keys (sans CB)',
+  openai:    'Cle sur <strong style="color:var(--cyan)">platform.openai.com</strong> → API Keys',
+  anthropic: 'Cle sur <strong style="color:var(--cyan)">console.anthropic.com</strong> → API Keys',
+  custom:    'URL complete de votre endpoint compatible OpenAI'
+};
+
+// TAROT DECKS
+const TAROT_DECKS = {};
+(function(){
+  const majM = ['Le Mat','Le Bateleur','La Papesse','L\'Imperatrice','L\'Empereur','Le Pape',
+    'L\'Amoureux','Le Chariot','La Justice','L\'Hermite','La Roue de Fortune','La Force',
+    'Le Pendu','L\'Arcane sans Nom','Temperance','Le Diable','La Maison-Dieu',
+    'L\'Etoile','La Lune','Le Soleil','Le Jugement','Le Monde'];
+  const majR = ['Le Fou','Le Magicien','La Grande Pretresse','L\'Imperatrice','L\'Empereur','Le Hierophante',
+    'Les Amoureux','Le Chariot','La Force','L\'Hermite','La Roue de Fortune','La Justice',
+    'Le Pendu','La Mort','Temperance','Le Diable','La Tour',
+    'L\'Etoile','La Lune','Le Soleil','Le Jugement','Le Monde'];
+  const suits_m = [['Baton','Batons'],['Epee','Epees'],['Coupe','Coupes'],['Denier','Deniers']];
+  const suits_r = [['Baguette','Baguettes'],['Epee','Epees'],['Coupe','Coupes'],['Pentacle','Pentacles']];
+  const vals = ['As','2','3','4','5','6','7','8','9','10','Valet','Cavalier','Reine','Roi'];
+  const minor = (suits) => suits.flatMap(([,pl]) => vals.map(v => `${v} de ${pl}`));
+  TAROT_DECKS.marseille = {name:'Tarot de Marseille', cards:[...majM, ...minor(suits_m)]};
+  TAROT_DECKS.rider     = {name:'Rider-Waite', cards:[...majR, ...minor(suits_r)]};
+  TAROT_DECKS.thoth     = {name:'Tarot Thoth', cards:[...majR.map(c=>c+' (Thoth)'), ...minor([['Baguette','Baguettes'],['Epee','Epees'],['Coupe','Coupes'],['Disque','Disques']])]};
+  TAROT_DECKS.osho      = {name:'Osho Zen', cards:[
+    'Le Fou','Le Magicien','L\'Intrepide','L\'Existence','Le Silence','L\'Abondance',
+    'L\'Intuition','Le Maitre','L\'Integrite','La Solitude','La Roue','La Force',
+    'La Transformation','L\'Equilibre','L\'Amour','Le Vide','Le Monde',
+    'La Reflexion','L\'Exces','L\'Inquietude','L\'Impatience','L\'Insistance','Le Jeu de Roles',
+    'La Supplication','L\'Auto-Sabotage','Le Doute','La Peur','La Colere','L\'Envie',
+    'La Timidite','La Blessure','La Deception','L\'Introspection','La Nostalgie',
+    'La Creativite','La Presence','L\'Amitie','La Confiance','Le Partage',
+    'La Celebration','L\'Integration','Le Travail','La Conscience','La Nouveaute',
+    'La Transformation Interieure','La Vision','La Joie','Le Mouvement','L\'Eveil',
+    'La Synchronicite','La Gratitude','La Communion','L\'Ascension',
+    'Le Zen (carte speciale)','La Totalite','L\'Etre','La Liberation',
+    'La Pleine Conscience','La Decouverte','La Serenite','L\'Illumination',
+    'La Compassion','Le Vide Fertile','Le Non-Etre','La Transcendance',
+    'La Gratitude Infinie','L\'Unite','La Grace','La Paix Interieure',
+    'Le Rayonnement','L\'Amour Universel','La Conscience Pure',
+    'La Benediction','Le Mystere','Le Divin','La Source','L\'Eveil Final',
+    'Le Retour au Soi','La Perfection','L\'Harmonie Totale','La Beatitude'
+  ].slice(0,79)};
+  const belline = ['Soleil','Lune','Don du Ciel','Etoile du destin','Presage heureux',
+    'Trahison','Proces','Mariage','Desaccord','Amour','Protection','Chance','Argent',
+    'Voyage','Sante','Famille','Mort symbolique','Reussite','Malchance','Amitie',
+    'Dispute','Espoir','Liaison dangereuse','Bonheur','Chagrin','Chance inattendue',
+    'Entourage toxique','Succes','Rupture','Reconciliation','Messager','Obstacles',
+    'Heritage','Avenir incertain','Voeu exauce','Prudence','Tentation','Jalousie',
+    'Deception','Soutien inattendu','Inquietude','Transformation','Solitude','Nouveau depart',
+    'Perte','Confusion','Protection divine','Crise','Guerison','Mauvais sort',
+    'Revelation','Epreuve'];
+  TAROT_DECKS.belline = {name:'Oracle de Belline', cards: belline};
+})();
+
+const TAROT_SPREADS = [
+  {n:1, label:'1 carte — Reponse directe', desc:'Demandez au client de penser intensement a sa question et de choisir 1 carte.'},
+  {n:3, label:'3 cartes — Passe / Present / Futur', desc:'Demandez au client de choisir 3 cartes. La 1ere represente le passe, la 2eme le present, la 3eme le futur.'},
+  {n:5, label:'5 cartes — Croix celtique simplifiee', desc:'Demandez au client de choisir 5 cartes. Position 1: situation, 2: obstacle, 3: base, 4: passe, 5: futur.'},
+  {n:7, label:'7 cartes — Fer a cheval', desc:'Demandez au client de choisir 7 cartes une par une, de gauche a droite.'},
+  {n:10, label:'10 cartes — Croix celtique complete', desc:'Demandez au client de choisir 10 cartes. Tirage approfondi recommande pour les questions complexes.'},
+];
+
+/* ═══════════════════════════════════════════
+   SECTION 2 — CONFIG & PERSISTENCE
+═══════════════════════════════════════════ */
+function ls(k,v){ if(v!==undefined){try{localStorage.setItem(k,v);}catch(e){console.warn('localStorage full');} return v;} return localStorage.getItem(k)||''; }
+
+const cfg = {
+  get provider()    { return ls('ma_provider')    || 'groq'; },
+  get apiKey()      { return ls('ma_apikey')       || ''; },
+  get model()       { return ls('ma_model')        || 'llama-3.3-70b-versatile'; },
+  get customUrl()   { return ls('ma_custom_url')   || ''; },
+  get workerUrl()   { return ls('ma_worker_url')   || ''; },
+  get workerToken() { return ls('ma_worker_token') || ''; },
+  get sysPrompt()   { return ls('ma_sys_prompt')   || DEFAULT_SYSTEM_PROMPT; },
+  get extra()       { return ls('ma_extra')        || ''; },
+  get services()    { return ls('ma_services')     || DEFAULT_SERVICES; },
+  get lang()        { return ls('ma_lang')         || 'fr-FR'; },
+  get voiceProfile(){ try{return JSON.parse(ls('ma_voice'))||null;}catch{return null;} },
+};
+
+/* ═══════════════════════════════════════════
+   SECTION 3 — ETAT GLOBAL
+═══════════════════════════════════════════ */
+const S = {
+  listening: false,
+  processing: false,
+  isPaused: false,
+  debounce: null,
+  timerInterval: null,
+  activeClient: null,
+  emailClient: null,
+  confirmCallback: null,
+  currentReport: null,
+  tarotSelectedCards: [],
+  tarotSpreadN: 3,
+  // SESSION ACTIVE
+  session: null,
+  // Voix
+  voiceCtx: null,
+  voiceAnalyser: null,
+  speakerInterval: null,
+  speakerHistory: [],
+  voiceStream: null,
+  enrollStream: null,
+  enrollCtx: null,
+  enrollSamples: [],
+  enrollMediaRecorder: null,
+  enrollAudioChunks: [],
+  enrollAudioBlob: null,
+};
+
+function createSession(){
+  return {
+    id: 'sess_' + Date.now(),
+    clientId: S.activeClient?.id || null,
+    clientName: S.activeClient?.name || 'Inconnu',
+    startTime: Date.now(),
+    endTime: null,
+    isPaused: false,
+    pausedMs: 0,
+    pauseStart: null,
+    transcript: '',
+    suggestions: [],
+    elements: {
+      tarot: [],
+      numerologie: null,
+      horoscope: null,
+      astrologie: null,
+      angeGardien: null,
+      main: null,
+      pendule: [],
+      alertes: [],
+      conversions: []
+    }
+  };
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 4 — CLOUDFLARE WORKER
+═══════════════════════════════════════════ */
+async function workerRequest(method, path, body=null){
+  if(!cfg.workerUrl) return null;
+  try{
+    const opts = {method, headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.workerToken}`}};
+    if(body) opts.body = JSON.stringify(body);
+    const r = await fetch(cfg.workerUrl.replace(/\/$/,'')+path, opts);
+    if(!r.ok) return null;
+    return await r.json();
+  }catch(e){ return null; }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 5 — AI API
+═══════════════════════════════════════════ */
+function getApiEndpoint(){
+  switch(cfg.provider){
+    case 'openrouter': return 'https://openrouter.ai/api/v1/chat/completions';
+    case 'openai':     return 'https://api.openai.com/v1/chat/completions';
+    case 'anthropic':  return 'https://api.anthropic.com/v1/messages';
+    case 'groq':       return 'https://api.groq.com/openai/v1/chat/completions';
+    case 'custom':     return cfg.customUrl;
+    default:           return 'https://api.groq.com/openai/v1/chat/completions';
+  }
+}
+function buildHeaders(){
+  const h = {'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`};
+  if(cfg.provider==='openrouter'){h['HTTP-Referer']='https://clairvoyancemedium.com';h['X-Title']='PGI MediumAssist Pro';}
+  return h;
+}
+function buildSysPrompt(){
+  let p = cfg.sysPrompt;
+  if(cfg.extra.trim()) p += `\n\nINSTRUCTIONS COMPLEMENTAIRES :\n${cfg.extra}`;
+  p += `\n\nSERVICES ET TARIFS :\n${cfg.services}`;
+  if(S.activeClient){
+    const c = S.activeClient;
+    p += `\n\nCLIENT EN CONSULTATION :\nNom : ${c.name}`;
+    if(c.birthdate) p += `\nDate de naissance : ${c.birthdate}`;
+    if(c.sign)      p += `\nSigne : ${c.sign}`;
+    if(c.profile)   p += `\nProfil : ${c.profile}`;
+    if(c.notes)     p += `\nNotes : ${c.notes}`;
+    if(c.consultations?.length){
+      p += `\nHistorique consultations precedentes :\n`;
+      c.consultations.slice(0,5).forEach(cs=>{
+        p += `- ${new Date(cs.date).toLocaleDateString('fr-FR')} : ${cs.summary||'consultation'}\n`;
+        if(cs.keyPoints?.length) p += `  Points cles : ${cs.keyPoints.join(', ')}\n`;
+      });
+    }
+    if(c.emailConsultations?.length){
+      p += `Consultations email precedentes :\n`;
+      c.emailConsultations.slice(0,3).forEach(ec=>{
+        p += `- ${new Date(ec.date).toLocaleDateString('fr-FR')} : ${ec.summary||'consultation email'}\n`;
+      });
+    }
+  }
+  if(S.session?.elements){
+    const el = S.session.elements;
+    if(el.tarot.length) p += `\nTirages Tarot de cette session : ${el.tarot.map(t=>`${t.deck} — ${t.cards.join(', ')}`).join(' | ')}`;
+    if(el.numerologie) p += `\nNumerologie : ${JSON.stringify(el.numerologie.calculs)}`;
+    if(el.ange) p += `\nMessage ange gardien recu : ${el.angeGardien?.text||''}`;
+    if(el.pendule.length) p += `\nReponses pendule : ${el.pendule.map(p=>`"${p.question}" → ${p.answer}`).join(' | ')}`;
+  }
+  return p;
+}
+
+async function callAI(userMsg, maxTokens=600, customSys=null, jsonMode=true){
+  if(!cfg.apiKey){ toast('Cle API manquante — ouvrez les parametres','warn'); return null; }
+  const sys = customSys || buildSysPrompt();
+  const body = {
+    model: cfg.model, max_tokens: maxTokens, temperature: 0.72,
+    messages: [{role:'system',content:sys},{role:'user',content:userMsg}]
+  };
+  if(jsonMode && cfg.provider !== 'anthropic') body.response_format = {type:'json_object'};
+  try{
+    const r = await fetch(getApiEndpoint(), {method:'POST',headers:buildHeaders(),body:JSON.stringify(body)});
+    if(!r.ok){
+      const err = await r.json().catch(()=>({}));
+      if(r.status===401) toast('Cle API invalide','err');
+      else if(r.status===429) toast('Limite API atteinte — patientez','warn');
+      else toast('Erreur IA ('+r.status+')','err');
+      return null;
+    }
+    const data = await r.json();
+    return data.choices?.[0]?.message?.content || null;
+  }catch(e){ toast('Connexion IA echouee','err'); return null; }
+}
+
+async function callVisionAI(imageBase64, mimeType, promptText){
+  if(!cfg.apiKey){ toast('Cle API manquante','warn'); return null; }
+  let body;
+  if(cfg.provider === 'anthropic'){
+    body = {
+      model: cfg.model, max_tokens: 800,
+      messages: [{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:mimeType,data:imageBase64}},
+        {type:'text',text:promptText}
+      ]}]
+    };
+  } else {
+    body = {
+      model: cfg.model, max_tokens: 800, temperature: 0.7,
+      messages: [{role:'system',content:buildSysPrompt()},{role:'user',content:[
+        {type:'image_url',image_url:{url:`data:${mimeType};base64,${imageBase64}`}},
+        {type:'text',text:promptText}
+      ]}]
+    };
+  }
+  try{
+    const r = await fetch(getApiEndpoint(), {method:'POST',headers:buildHeaders(),body:JSON.stringify(body)});
+    if(!r.ok){ toast('Erreur vision IA ('+r.status+')','err'); return null; }
+    const data = await r.json();
+    return data.choices?.[0]?.message?.content || data.content?.[0]?.text || null;
+  }catch(e){ toast('Connexion vision IA echouee','err'); return null; }
+}
+
+function safeJSON(raw){
+  try{ return JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+  catch(e){ return null; }
+}
+
+function hasVision(){
+  const m = cfg.model, p = cfg.provider;
+  if(p==='openai') return m.includes('gpt-4o')||m.includes('gpt-4-turbo')||m.includes('vision');
+  if(p==='anthropic') return m.includes('claude-3');
+  if(p==='openrouter') return ['gpt-4o','claude-3','gemini','llava','vision'].some(v=>m.includes(v));
+  return false;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 6 — GESTION DE SESSION
+═══════════════════════════════════════════ */
+function startConsultation(){
+  S.session = createSession();
+  S.listening = true;
+  S.isPaused = false;
+  initReco();
+  try{ if(recognition) recognition.start(); } catch(e){}
+  setMicActive(true);
+  setStatus('listening');
+  showSessionBar(true);
+  showSessionUI();
+  startTimer();
+  startSpeakerDetection();
+  document.getElementById('footer-idle').style.display = 'none';
+  document.getElementById('footer-active').style.display = 'flex';
+  toast('Consultation demarree','info');
+}
+
+function togglePause(){
+  if(!S.session) return;
+  if(!S.isPaused){
+    // PAUSE
+    S.isPaused = true;
+    S.session.pauseStart = Date.now();
+    S.session.isPaused = true;
+    S.listening = false;
+    if(recognition){ try{recognition.stop();}catch(e){} recognition=null; }
+    setStatus('paused');
+    document.getElementById('sbar-pause').textContent = 'REPRENDRE';
+    toast('Consultation en pause','warn');
+  } else {
+    // REPRENDRE
+    S.isPaused = false;
+    if(S.session.pauseStart) S.session.pausedMs += Date.now()-S.session.pauseStart;
+    S.session.isPaused = false;
+    S.listening = true;
+    initReco();
+    try{ if(recognition) recognition.start(); } catch(e){}
+    setStatus('listening');
+    document.getElementById('sbar-pause').textContent = 'PAUSE';
+    toast('Consultation reprise','info');
+  }
+}
+
+function confirmStop(){
+  const name = S.session?.clientName || 'ce client';
+  showConfirm(
+    'Terminer la consultation',
+    `Terminer la consultation de ${name} et generer le rapport ?`,
+    stopConsultation
+  );
+}
+
+async function stopConsultation(){
+  if(!S.session) return;
+  S.session.endTime = Date.now();
+  S.listening = false;
+  S.isPaused = false;
+  if(recognition){ try{recognition.stop();}catch(e){} recognition=null; }
+  stopSpeakerDetection();
+  clearInterval(S.timerInterval);
+  setStatus('idle');
+  showSessionBar(false);
+  document.getElementById('footer-idle').style.display = 'flex';
+  document.getElementById('footer-active').style.display = 'none';
+  setMicActive(false);
+  // Generer et afficher le rapport
+  await generateAndShowReport();
+}
+
+function startTimer(){
+  clearInterval(S.timerInterval);
+  S.timerInterval = setInterval(()=>{
+    if(!S.session) return;
+    const elapsed = Date.now() - S.session.startTime - S.session.pausedMs;
+    const s = Math.floor(elapsed/1000);
+    const m = Math.floor(s/60);
+    const h = Math.floor(m/60);
+    const pad = n => String(n).padStart(2,'0');
+    document.getElementById('sbar-timer').textContent = h>0 ? `${pad(h)}:${pad(m%60)}:${pad(s%60)}` : `${pad(m)}:${pad(s%60)}`;
+  }, 1000);
+}
+
+function showSessionBar(show){
+  const bar = document.getElementById('session-bar');
+  if(show){
+    bar.classList.add('show');
+    const name = S.session?.clientName || 'Consultation en cours';
+    document.getElementById('sbar-client').textContent = name;
+    document.getElementById('sbar-pause').textContent = 'PAUSE';
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 7 — RECONNAISSANCE VOCALE
+═══════════════════════════════════════════ */
+let recognition = null;
+
+function initReco(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return;
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = cfg.lang;
+  recognition.maxAlternatives = 1;
+  recognition.onresult = (e)=>{
+    let final='', interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t = e.results[i][0].transcript;
+      if(e.results[i].isFinal) final += t+' ';
+      else interim += t;
+    }
+    if(final && S.session){
+      S.session.transcript += final;
+      updateTranscriptUI();
+      clearTimeout(S.debounce);
+      S.debounce = setTimeout(()=>getSuggestion(), 1600);
+    }
+    document.getElementById('transcript-interim').textContent = interim ? `> ${interim}` : '';
+  };
+  recognition.onerror = (e)=>{
+    if(e.error==='no-speech') return;
+    if(e.error==='not-allowed'){ toast('Acces micro refuse — verifiez Chrome','err'); return; }
+  };
+  recognition.onend = ()=>{
+    if(S.listening && !S.isPaused) setTimeout(()=>{ try{if(recognition)recognition.start();}catch(e){}},300);
+  };
+}
+
+function forceSuggest(){
+  if(!S.session?.transcript.trim()){ toast('Aucune transcription disponible','warn'); return; }
+  clearTimeout(S.debounce);
+  getSuggestion();
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 8 — DETECTION DE LOCUTEUR
+═══════════════════════════════════════════ */
+async function startSpeakerDetection(){
+  if(!cfg.voiceProfile) return;
+  try{
+    S.voiceStream = await navigator.mediaDevices.getUserMedia({audio:true});
+    S.voiceCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const src = S.voiceCtx.createMediaStreamSource(S.voiceStream);
+    S.voiceAnalyser = S.voiceCtx.createAnalyser();
+    S.voiceAnalyser.fftSize = 256;
+    src.connect(S.voiceAnalyser);
+    S.speakerInterval = setInterval(checkSpeaker, 500);
+    document.getElementById('speaker-bar').style.display = 'flex';
+  }catch(e){}
+}
+function stopSpeakerDetection(){
+  if(S.speakerInterval){ clearInterval(S.speakerInterval); S.speakerInterval=null; }
+  if(S.voiceStream){ S.voiceStream.getTracks().forEach(t=>t.stop()); S.voiceStream=null; }
+  if(S.voiceCtx){ S.voiceCtx.close(); S.voiceCtx=null; }
+  document.getElementById('speaker-bar').style.display = 'none';
+}
+function checkSpeaker(){
+  if(!S.voiceAnalyser||!cfg.voiceProfile?.fft) return;
+  const data = new Uint8Array(S.voiceAnalyser.frequencyBinCount);
+  S.voiceAnalyser.getByteFrequencyData(data);
+  const sim = cosineSim(Array.from(data).slice(0,cfg.voiceProfile.fft.length), cfg.voiceProfile.fft);
+  S.speakerHistory.push(sim);
+  if(S.speakerHistory.length>5) S.speakerHistory.shift();
+  const avg = S.speakerHistory.reduce((a,b)=>a+b,0)/S.speakerHistory.length;
+  const lbl = document.getElementById('speaker-label');
+  const nm = document.getElementById('speaker-name');
+  if(avg>0.70){lbl.className='speaker-chip chip-you';lbl.textContent='MIC Frederick';nm.textContent='(analyse en pause)';}
+  else if(avg<0.40){lbl.className='speaker-chip chip-client';lbl.textContent='ECT '+(S.activeClient?.name||'Client');nm.textContent='(analyse active)';}
+  else{lbl.className='speaker-chip chip-unknown';lbl.textContent='Detection...';nm.textContent='';}
+}
+function cosineSim(a,b){
+  let dot=0,na=0,nb=0;
+  for(let i=0;i<Math.min(a.length,b.length);i++){dot+=a[i]*b[i];na+=a[i]*a[i];nb+=b[i]*b[i];}
+  return na&&nb?dot/(Math.sqrt(na)*Math.sqrt(nb)):0;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 9 — EMPREINTE VOCALE
+═══════════════════════════════════════════ */
+async function startVoiceEnrollment(){
+  const btn=document.getElementById('btn-voice-record');
+  btn.disabled=true;
+  const ring=document.getElementById('voice-ring');
+  const statusEl=document.getElementById('voice-status');
+  const bar=document.getElementById('voice-progress-bar');
+  const playbackDiv=document.getElementById('voice-playback');
+  const validateBtn=document.getElementById('btn-voice-validate');
+  S.enrollSamples=[];S.enrollAudioChunks=[];S.enrollAudioBlob=null;
+  playbackDiv.classList.remove('show');validateBtn.style.display='none';
+  try{
+    S.enrollStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    S.enrollCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const src=S.enrollCtx.createMediaStreamSource(S.enrollStream);
+    const analyser=S.enrollCtx.createAnalyser();analyser.fftSize=256;src.connect(analyser);
+    S.enrollMediaRecorder=new MediaRecorder(S.enrollStream);
+    S.enrollMediaRecorder.ondataavailable=e=>{if(e.data.size>0)S.enrollAudioChunks.push(e.data);};
+    S.enrollMediaRecorder.onstop=()=>{
+      S.enrollAudioBlob=new Blob(S.enrollAudioChunks,{type:'audio/webm'});
+      document.getElementById('voice-audio').src=URL.createObjectURL(S.enrollAudioBlob);
+      playbackDiv.classList.add('show');validateBtn.style.display='block';
+      statusEl.innerHTML='<span class="voice-done-text">Enregistrement termine. Ecoutez, puis validez.</span>';
+    };
+    S.enrollMediaRecorder.start();
+    ring.classList.add('recording');ring.textContent='REC';
+    statusEl.innerHTML='<strong style="color:var(--pink)">Parlez maintenant... (15 secondes)</strong>';
+    const total=15000,interval=100;let elapsed=0;
+    const timer=setInterval(()=>{
+      elapsed+=interval;bar.style.width=(elapsed/total*100)+'%';
+      const data=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(data);
+      S.enrollSamples.push(Array.from(data));
+      if(elapsed>=total){
+        clearInterval(timer);
+        if(S.enrollMediaRecorder.state!=='inactive') S.enrollMediaRecorder.stop();
+        ring.classList.remove('recording');ring.textContent='OK';
+        if(S.enrollStream){S.enrollStream.getTracks().forEach(t=>t.stop());S.enrollStream=null;}
+        if(S.enrollCtx){S.enrollCtx.close();S.enrollCtx=null;}
+        btn.disabled=false;
+      }
+    },interval);
+  }catch(e){
+    statusEl.innerHTML='<span style="color:var(--red)">Acces micro refuse — verifiez les permissions Chrome.</span>';
+    btn.disabled=false;ring.classList.remove('recording');
+  }
+}
+async function validateVoiceProfile(){
+  if(!S.enrollSamples.length){toast('Enregistrez votre voix d\'abord','warn');return;}
+  const bins=S.enrollSamples[0].length;
+  const avgFft=Array(bins).fill(0);
+  S.enrollSamples.forEach(s=>s.forEach((v,i)=>avgFft[i]+=v));
+  avgFft.forEach((_,i)=>avgFft[i]/=S.enrollSamples.length);
+  const profile={fft:avgFft,recordedAt:new Date().toISOString()};
+  try{ls('ma_voice',JSON.stringify(profile));}catch(e){toast('Erreur sauvegarde locale','err');return;}
+  await workerRequest('PUT','/voice',profile);
+  document.getElementById('s-voice-status-txt').textContent='Profil vocal enregistre le '+new Date(profile.recordedAt).toLocaleDateString('fr-FR');
+  document.getElementById('btn-voice-delete').style.display='block';
+  document.getElementById('voice-status').innerHTML='<span class="voice-done-text">Profil vocal sauvegarde avec succes.</span>';
+  document.getElementById('btn-voice-validate').style.display='none';
+  document.getElementById('btn-voice-record').textContent='NOUVEL ENREGISTREMENT';
+  toast('Profil vocal sauvegarde');
+}
+function confirmDeleteVoice(){
+  showConfirm('Supprimer le profil vocal','Supprimer definitivement votre empreinte vocale ?',()=>{
+    ls('ma_voice','');workerRequest('DELETE','/voice');
+    document.getElementById('s-voice-status-txt').textContent='Aucun profil vocal enregistre.';
+    document.getElementById('btn-voice-delete').style.display='none';
+    document.getElementById('voice-status').textContent='';
+    document.getElementById('voice-ring').textContent='MIC';
+    document.getElementById('voice-progress-bar').style.width='0%';
+    document.getElementById('voice-playback').classList.remove('show');
+    document.getElementById('btn-voice-validate').style.display='none';
+    toast('Profil vocal supprime');
+  });
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 10 — SUGGESTION PRINCIPALE
+═══════════════════════════════════════════ */
+async function getSuggestion(customMsg=null){
+  if(!S.session&&!customMsg) return;
+  if(S.processing) return;
+  const transcript = S.session?.transcript || '';
+  if(!transcript.trim()&&!customMsg) return;
+  S.processing=true;setStatus('processing');setSuggestionLoading(true);
+  const msg = customMsg || `Transcription de la consultation (dernieres paroles) :\n\n"${transcript.slice(-1400)}"\n\nAnalyse et fournis la reponse JSON.`;
+  try{
+    const raw=await callAI(msg);
+    if(!raw) return;
+    const data=safeJSON(raw);
+    if(data){
+      renderResponse(data);
+      if(S.session) S.session.suggestions.push({...data,timestamp:Date.now()});
+    }
+  }finally{
+    S.processing=false;setStatus(S.listening&&!S.isPaused?'listening':S.isPaused?'paused':'idle');setSuggestionLoading(false);
+  }
+}
+
+function renderResponse(d){
+  if(d.suggestion){
+    const el=document.getElementById('suggestion-text');
+    el.className='';el.textContent=d.suggestion;
+    el.style.animation='none';requestAnimationFrame(()=>el.style.animation='slide-in 0.35s ease-out');
+  }
+  if(d.contexte){
+    document.getElementById('context-card').classList.add('show');
+    document.getElementById('context-text').textContent='['+d.contexte+']';
+  }
+  const alertEl=document.getElementById('alert-card');
+  if(d.alerte){
+    document.getElementById('alert-text').textContent=d.alerte;alertEl.classList.add('show');
+    if(S.session) S.session.elements.alertes.push({text:d.alerte,timestamp:Date.now()});
+  } else alertEl.classList.remove('show');
+  const oppEl=document.getElementById('opp-card');
+  if(d.opportunite){
+    document.getElementById('opp-service').textContent=d.opportunite.service;
+    document.getElementById('opp-price').textContent=d.opportunite.prix;
+    document.getElementById('opp-why').textContent=d.opportunite.pourquoi;
+    oppEl.classList.add('show');document.getElementById('conv-panel').classList.remove('show');
+    document.getElementById('conv-phrases').innerHTML='';
+  } else oppEl.classList.remove('show');
+}
+
+async function loadConversion(){
+  const opp=document.getElementById('opp-service').textContent;
+  const prix=document.getElementById('opp-price').textContent;
+  const pourquoi=document.getElementById('opp-why').textContent;
+  const btn=document.getElementById('btn-conv');btn.textContent='GENERATION...';btn.disabled=true;
+  const transcript=S.session?.transcript||'';
+  const msg=`Frederick est en appel. Contexte : "${transcript.slice(-600)}"
+Service : ${opp} (${prix})
+Timing : ${pourquoi}
+Genere 3 phrases de conversion naturelles, non commerciales, style medium. Partir du probleme de la personne.
+JSON: {"phrases":["phrase 1","phrase 2","phrase 3"]}`;
+  const raw=await callAI(msg,400);
+  const data=safeJSON(raw);
+  if(data?.phrases){
+    const container=document.getElementById('conv-phrases');container.innerHTML='';
+    data.phrases.forEach((p,i)=>{
+      const div=document.createElement('div');div.className='conv-phrase';
+      div.innerHTML=`<div class="conv-num">OPTION ${i+1}</div><div>${p}</div>`;
+      div.onclick=()=>{navigator.clipboard?.writeText(p).catch(()=>{});toast('Copie');};
+      container.appendChild(div);
+    });
+    document.getElementById('conv-panel').classList.add('show');
+    document.getElementById('conv-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+    if(S.session) S.session.elements.conversions.push({phrases:data.phrases,timestamp:Date.now()});
+  }
+  btn.textContent='GENERER PHRASES DE CONVERSION \u2192';btn.disabled=false;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 11 — ACTIONS RAPIDES
+═══════════════════════════════════════════ */
+const QA_PROMPTS={
+  epate:(t,c)=>`Transcription : "${t}"${c}\nAction : "Epate le client" — Genere une reponse SPECTACULAIRE avec un effet waouh maximal. Detail inattendu, precis, impossible a deviner.\nJSON: {"suggestion":"...","contexte":"...","alerte":null,"opportunite":null}`,
+  question:(t,c)=>`Transcription : "${t}"${c}\nAction : "Question percutante" — Genere une question qui semble impossible sans capacites mediumniques.\nJSON: {"suggestion":"...","contexte":"...","alerte":null,"opportunite":null}`,
+  alerte:(t,c)=>`Transcription : "${t}"${c}\nAction : "Mise en garde" — Lance une alerte serieuse sur un danger percu. Precis et percutant.\nJSON: {"suggestion":"...","contexte":"...","alerte":"la mise en garde","opportunite":null}`,
+  service:(t,c)=>`Transcription : "${t}"${c}\nAction : "Propose un service" — Identifie le service le plus adapte et genere une proposition naturelle.\nJSON: {"suggestion":"...","contexte":"...","alerte":null,"opportunite":{"service":"...","prix":"...","pourquoi":"..."}}`,
+  revelation:(t,c)=>`Transcription : "${t}"${c}\nAction : "Revelation surprise" — Un flash inattendu sur la personne, quelque chose qu'elle n'a pas dit.\nJSON: {"suggestion":"...","contexte":"...","alerte":null,"opportunite":null}`,
+  energie:(t,c)=>`Transcription : "${t}"${c}\nAction : "Lis l'energie" — Lecture energetique complete : etat interieur, blocages, forces, faiblesses.\nJSON: {"suggestion":"...","contexte":"...","alerte":null,"opportunite":null}`,
+};
+async function quickAction(type){
+  S.processing=true;setStatus('processing');setSuggestionLoading(true);
+  const t=(S.session?.transcript||'Debut de consultation').slice(-800);
+  const cCtx=S.activeClient?`\nClient : ${S.activeClient.name}${S.activeClient.profile?' — '+S.activeClient.profile.slice(0,100):''}` : '';
+  const msgFn=QA_PROMPTS[type];
+  if(!msgFn){S.processing=false;return;}
+  try{
+    const raw=await callAI(msgFn(t,cCtx));
+    const data=safeJSON(raw);
+    if(data){ renderResponse(data); if(S.session) S.session.suggestions.push({...data,type,timestamp:Date.now()}); }
+  }finally{
+    S.processing=false;setStatus(S.listening&&!S.isPaused?'listening':S.isPaused?'paused':'idle');setSuggestionLoading(false);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 12 — MODULE TAROT
+═══════════════════════════════════════════ */
+function openModule(type){
+  if(type==='tarot') openTarot();
+  else if(type==='numerologie') openNumerologie();
+  else if(type==='horoscope') openHoroscope();
+  else if(type==='astrologie') openAstrologie();
+  else if(type==='ange') openOverlay('mod-ange');
+  else if(type==='main') openMainModule();
+  else if(type==='pendule') openPendule();
+  else if(type==='alertes') openOverlay('mod-alertes');
+}
+
+function openTarot(){
+  updateTarotDeck();
+  openOverlay('mod-tarot');
+}
+function updateTarotDeck(){
+  const deck=document.getElementById('tarot-deck').value;
+  const spreadsDiv=document.getElementById('tarot-spread-btns');
+  spreadsDiv.innerHTML='';
+  TAROT_SPREADS.forEach((sp,i)=>{
+    const b=document.createElement('button');b.className='tarot-spread-btn'+(i===1?' active':'');
+    b.textContent=sp.label;b.dataset.idx=i;
+    b.onclick=()=>{
+      document.querySelectorAll('.tarot-spread-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');S.tarotSpreadN=sp.n;
+      showTarotInstruction(sp,deck);
+    };
+    spreadsDiv.appendChild(b);
+  });
+  S.tarotSpreadN=3;
+  showTarotInstruction(TAROT_SPREADS[1],deck);
+}
+function showTarotInstruction(sp,deckKey){
+  const deck=TAROT_DECKS[deckKey||document.getElementById('tarot-deck').value];
+  const instrEl=document.getElementById('tarot-instruction');
+  instrEl.style.display='block';
+  instrEl.textContent=`DITES AU CLIENT : "${sp.desc}"`;
+  // Generer les cartes aleatoires
+  S.tarotSelectedCards=[];
+  const shuffled=[...deck.cards].sort(()=>Math.random()-0.5);
+  const cards=shuffled.slice(0,sp.n);
+  const grid=document.getElementById('tarot-cards-grid');
+  grid.innerHTML='';
+  document.getElementById('tarot-cards-section').style.display='block';
+  document.getElementById('tarot-selection-info').textContent=`${sp.n} carte(s) tiree(s) — toutes selectionnees. Deselectionnez si le client refuse une carte.`;
+  S.tarotSelectedCards=[...cards];
+  cards.forEach(card=>{
+    const chip=document.createElement('div');chip.className='tarot-card-chip selected';
+    chip.textContent=card;
+    chip.onclick=()=>{
+      if(chip.classList.contains('selected')){
+        chip.classList.remove('selected');S.tarotSelectedCards=S.tarotSelectedCards.filter(c=>c!==card);
+      } else {
+        chip.classList.add('selected');S.tarotSelectedCards.push(card);
+      }
+    };
+    grid.appendChild(chip);
+  });
+  document.getElementById('btn-tarot-interpret').style.display='block';
+}
+async function interpretTarot(){
+  if(!S.tarotSelectedCards.length){toast('Aucune carte selectionnee','warn');return;}
+  const deckName=TAROT_DECKS[document.getElementById('tarot-deck').value]?.name||'Tarot';
+  const spread=TAROT_SPREADS.find(s=>s.n===S.tarotSpreadN)||TAROT_SPREADS[1];
+  const btn=document.getElementById('btn-tarot-interpret');btn.textContent='INTERPRETATION...';btn.disabled=true;
+  const t=S.session?.transcript||'';
+  const c=S.activeClient;
+  const ctx=c?`Client : ${c.name}${c.birthdate?' (ne le '+c.birthdate+')':''}${c.profile?'. '+c.profile.slice(0,100):''}`:' ';
+  const msg=`Frederick fait un tirage de ${deckName}, type "${spread.label}".
+Cartes tirees dans l'ordre : ${S.tarotSelectedCards.join(' | ')}
+${ctx}
+Transcription de la consultation : "${t.slice(-600)||'Debut de consultation'}"
+
+Interprete ce tirage de maniere professionnelle, precise et non generique. Relier chaque carte a la situation du client. Utilise le vocabulaire d'un medium experimente.
+Reponds en JSON : {"interpretation":"lecture complete en 3 a 5 paragraphes","cle":"la cle dominante du tirage en 1 phrase"}`;
+  const raw=await callAI(msg,800,null,true);
+  const data=safeJSON(raw);
+  if(data?.interpretation){
+    const result={deck:deckName,spread:spread.label,cards:S.tarotSelectedCards,interpretation:data.interpretation,cle:data.cle,timestamp:Date.now()};
+    if(S.session) S.session.elements.tarot.push(result);
+    addModuleResult('tarot',`TAROT — ${deckName} — ${spread.label}`,
+      `CARTES : ${S.tarotSelectedCards.join(' | ')}\n\n${data.interpretation}${data.cle?'\n\nCLE DU TIRAGE : '+data.cle:''}`,
+      'mod-tarot');
+    closeOverlay('mod-tarot');
+    toast('Interpretation du tarot generee');
+  }
+  btn.textContent='INTERPRETER CE TIRAGE';btn.disabled=false;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 13 — MODULE NUMEROLOGIE
+═══════════════════════════════════════════ */
+function calcLifePath(dobStr){
+  const clean=dobStr.replace(/\D/g,'');
+  if(clean.length<8) return null;
+  let sum=clean.split('').reduce((a,b)=>a+parseInt(b),0);
+  while(sum>9&&sum!==11&&sum!==22&&sum!==33) sum=String(sum).split('').reduce((a,b)=>a+parseInt(b),0);
+  return sum;
+}
+function calcExpression(fullName){
+  const pythagorean={a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
+  const n=fullName.toLowerCase().replace(/[^a-z]/g,'');
+  let sum=n.split('').reduce((a,c)=>a+(pythagorean[c]||0),0);
+  while(sum>9&&sum!==11&&sum!==22&&sum!==33) sum=String(sum).split('').reduce((a,b)=>a+parseInt(b),0);
+  return sum;
+}
+function calcIntimateNumber(fullName){
+  const vowels={a:1,e:5,i:9,o:6,u:3,y:7};
+  const n=fullName.toLowerCase().replace(/[^a-zy]/g,'');
+  let sum=n.split('').reduce((a,c)=>a+(vowels[c]||0),0);
+  while(sum>9&&sum!==11&&sum!==22&&sum!==33) sum=String(sum).split('').reduce((a,b)=>a+parseInt(b),0);
+  return sum;
+}
+function openNumerologie(){
+  const c=S.activeClient;
+  if(c){
+    document.getElementById('num-prenom').value=c.name||'';
+    if(c.birthdate) document.getElementById('num-dob').value=c.birthdate;
+  }
+  document.getElementById('num-calc-display').style.display='none';
+  openOverlay('mod-numerologie');
+}
+async function runNumerologie(){
+  const prenom=document.getElementById('num-prenom').value.trim();
+  const nom=document.getElementById('num-nom').value.trim();
+  const dobStr=document.getElementById('num-dob').value.trim();
+  if(!prenom&&!dobStr){toast('Entrez au moins un prenom ou une date','warn');return;}
+  const fullName=(prenom+' '+nom).trim();
+  const calculs={};
+  if(dobStr) calculs['Chemin de vie']=calcLifePath(dobStr);
+  if(fullName.trim()){
+    calculs['Nombre d\'expression']=calcExpression(fullName);
+    calculs['Nombre intime']=calcIntimateNumber(fullName);
+  }
+  // Afficher les badges
+  const badgesDiv=document.getElementById('num-badges');badgesDiv.innerHTML='';
+  Object.entries(calculs).forEach(([label,val])=>{
+    if(val===null) return;
+    const b=document.createElement('div');b.className='num-badge';
+    b.innerHTML=`<div class="num-value">${val}</div><div class="num-label">${label}</div>`;
+    badgesDiv.appendChild(b);
+  });
+  document.getElementById('num-calc-display').style.display='block';
+  const t=S.session?.transcript||'';
+  const c=S.activeClient;
+  const ctx=c?`Profil client : ${c.profile||''}${c.notes?'. '+c.notes:''}` : '';
+  const msg=`Numerologie de ${fullName||'le client'} :
+Calculs : ${Object.entries(calculs).map(([k,v])=>`${k} = ${v}`).join(', ')}
+${dobStr?'Date de naissance : '+dobStr:''}
+${ctx}
+Consultation en cours : "${t.slice(-400)||'Debut'}"
+
+Fournis une analyse numerologique professionnelle, developpee et exploitable en consultation. Inclus : signification de chaque nombre, traits de personnalite profonds, opportunites et defis, conseils pratiques.
+JSON: {"analyse":"analyse complete en 3-4 paragraphes","mot_cle":"le mot cle numerologique en quelques mots"}`;
+  const raw=await callAI(msg,700,null,true);
+  const data=safeJSON(raw);
+  if(data?.analyse){
+    if(S.session) S.session.elements.numerologie={prenom,nom,dobStr,calculs,analyse:data.analyse,timestamp:Date.now()};
+    addModuleResult('numerologie','NUMEROLOGIE',
+      `${Object.entries(calculs).map(([k,v])=>`${k} : ${v}`).join(' | ')}\n\n${data.analyse}${data.mot_cle?'\n\nMOT CLE : '+data.mot_cle:''}`,
+      'mod-numerologie');
+    closeOverlay('mod-numerologie');
+    toast('Analyse numerologique generee');
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 14 — MODULE HOROSCOPE
+═══════════════════════════════════════════ */
+function openHoroscope(){
+  const c=S.activeClient;
+  if(c?.sign) document.getElementById('horoscope-sign').value=c.sign;
+  openOverlay('mod-horoscope');
+}
+async function runHoroscope(){
+  const sign=document.getElementById('horoscope-sign').value;
+  const period=document.getElementById('horoscope-period').value;
+  if(!sign){toast('Selectionnez un signe astrologique','warn');return;}
+  const btn=document.querySelector('#mod-horoscope .btn-primary');btn.textContent='GENERATION...';btn.disabled=true;
+  const t=S.session?.transcript||'';
+  const msg=`Horoscope ${period} pour le signe ${sign}.
+Consultation en cours : "${t.slice(-400)||'Pas de consultation active'}"
+${S.activeClient?'Client : '+S.activeClient.name+(S.activeClient.profile?'. '+S.activeClient.profile.slice(0,100):'') : ''}
+
+Redige un horoscope professionnel, precis et personnalise en lien avec le contexte de la consultation. Domaines : amour, travail, finances, sante, energie generale. Le ton doit etre inspire, credible et exploitable en direct.
+JSON: {"horoscope":"texte complet","point_fort":"le point fort principal","point_vigilance":"le point de vigilance"}`;
+  const raw=await callAI(msg,600,null,true);
+  const data=safeJSON(raw);
+  if(data?.horoscope){
+    if(S.session) S.session.elements.horoscope={sign,period,...data,timestamp:Date.now()};
+    addModuleResult('horoscope',`HOROSCOPE ${sign.toUpperCase()} — ${period.toUpperCase()}`,
+      data.horoscope+(data.point_fort?'\n\nFORCE : '+data.point_fort:'')+(data.point_vigilance?'\nVIGILANCE : '+data.point_vigilance:''),
+      'mod-horoscope');
+    closeOverlay('mod-horoscope');
+    toast('Horoscope genere');
+  }
+  btn.textContent='GENERER L\'HOROSCOPE';btn.disabled=false;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 15 — MODULE ASTROLOGIE
+═══════════════════════════════════════════ */
+function openAstrologie(){
+  const c=S.activeClient;
+  if(c?.birthdate) document.getElementById('astro-dob').value=c.birthdate;
+  openOverlay('mod-astrologie');
+}
+async function runAstrologie(){
+  const dob=document.getElementById('astro-dob').value.trim();
+  const time=document.getElementById('astro-time').value.trim();
+  const place=document.getElementById('astro-place').value.trim();
+  const focus=document.getElementById('astro-focus').value;
+  if(!dob){toast('Entrez une date de naissance','warn');return;}
+  const btn=document.querySelector('#mod-astrologie .btn-primary');btn.textContent='ANALYSE EN COURS...';btn.disabled=true;
+  const t=S.session?.transcript||'';
+  const c=S.activeClient;
+  const ctx=c?`Client : ${c.name}. ${c.profile||''}` : '';
+  const msg=`Analyse astrologique approfondie :
+Date de naissance : ${dob}${time?' — Heure : '+time:''}${place?' — Lieu : '+place:''}
+Focus : ${focus}
+${ctx}
+Consultation : "${t.slice(-400)||'Pas de consultation active'}"
+
+Fournis une analyse astrologique ultra-developpee, haut de gamme, professionnelle. Inclus : signe solaire, lune, ascendant (si heure disponible), dominantes planetaires, maisons importantes, aspects cles, transits actuels pertinents, conseils pratiques relies au contexte. Ton : mysterieux, precis, professionnel.
+JSON: {"analyse":"analyse complete en 4-6 paragraphes","signe_solaire":"signe","ascendant_estime":"ascendant si applicable","mot_cle":"essence en quelques mots"}`;
+  const raw=await callAI(msg,900,null,true);
+  const data=safeJSON(raw);
+  if(data?.analyse){
+    if(S.session) S.session.elements.astrologie={dob,time,place,focus,...data,timestamp:Date.now()};
+    addModuleResult('astrologie','ASTROLOGIE APPROFONDIE',
+      `${data.signe_solaire?'SIGNE : '+data.signe_solaire+' ':''}${data.ascendant_estime?'| ASCENDANT ESTIME : '+data.ascendant_estime:''}${data.mot_cle?'\nESSENCE : '+data.mot_cle:''}\n\n${data.analyse}`,
+      'mod-astrologie');
+    closeOverlay('mod-astrologie');
+    toast('Analyse astrologique generee');
+  }
+  btn.textContent='GENERER L\'ANALYSE ASTROLOGIQUE';btn.disabled=false;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 16 — MODULE ANGE GARDIEN
+═══════════════════════════════════════════ */
+async function runAngeGardien(){
+  const focus=document.getElementById('ange-focus').value;
+  const btn=document.querySelector('#mod-ange .btn-primary');btn.textContent='RECEPTION...';btn.disabled=true;
+  const t=S.session?.transcript||'';
+  const c=S.activeClient;
+  const msg=`Message de l'ange gardien — orientation : ${focus}
+${c?'Client : '+c.name+(c.profile?'. '+c.profile.slice(0,100):''):''}
+${c?.consultations?.length?'Historique : '+c.consultations.slice(0,2).map(cs=>cs.summary).join('. '):''}
+Consultation en cours : "${t.slice(-500)||'Pas de consultation active'}"
+
+Genere un message de l'ange gardien unique, inspire, profond et exploitable en direct. Il doit sembler transmis depuis un plan superieur. Precis sur la situation de la personne. Inclure : une perception energetique, un conseil divin, une mise en garde subtile si necessaire, une phrase de benediction.
+JSON: {"message":"le message complet en 3-4 paragraphes","nom_ange":"nom de l'ange percu (intuitif)","symbole":"un symbole ou signe recu"}`;
+  const raw=await callAI(msg,600,null,true);
+  const data=safeJSON(raw);
+  if(data?.message){
+    if(S.session) S.session.elements.angeGardien={focus,...data,timestamp:Date.now()};
+    addModuleResult('ange','MESSAGE DE L\'ANGE GARDIEN',
+      `${data.nom_ange?'ANGE PERCU : '+data.nom_ange+'\n':''}${data.symbole?'SYMBOLE : '+data.symbole+'\n\n':'\n'}${data.message}`,
+      'mod-ange');
+    closeOverlay('mod-ange');
+    toast('Message de l\'ange recu');
+  }
+  btn.textContent='RECEVOIR LE MESSAGE';btn.disabled=false;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 17 — MODULE LIGNE DE LA MAIN
+═══════════════════════════════════════════ */
+function openMainModule(){
+  const warn=document.getElementById('main-vision-warning');
+  warn.style.display=hasVision()?'none':'block';
+  openOverlay('mod-main');
+}
+function previewMainPhoto(){
+  const file=document.getElementById('main-photo').files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('main-img').src=e.target.result;
+    document.getElementById('main-photo-preview').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+async function runLigneDeLaMain(){
+  if(!hasVision()){toast('Modele avec vision requis — changez dans les parametres','warn');return;}
+  const file=document.getElementById('main-photo').files[0];
+  const focus=document.getElementById('main-focus').value;
+  if(!file){toast('Choisissez une photo de la main','warn');return;}
+  const btn=document.querySelector('#mod-main .btn-primary');btn.textContent='ANALYSE EN COURS...';btn.disabled=true;
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    const b64=e.target.result.split(',')[1];
+    const mimeType=file.type||'image/jpeg';
+    const t=S.session?.transcript||'';
+    const c=S.activeClient;
+    const prompt=`Analyse cette photo de la main en tant que medium et chiromancien professionnel.
+Focus : ${focus}
+${c?'Client : '+c.name+(c.profile?'. '+c.profile.slice(0,100):''):''}
+Consultation : "${t.slice(-400)||'Pas de consultation active'}"
+
+Fournis une lecture de la main detaillee, professionnelle et exploitable en direct. Inclus : lignes principales (vie, coeur, tete, destin), monts, doigts, signaux energetiques percus. Relier au contexte de la consultation. Ton : medium experimente, precis, confiant.`;
+    const result=await callVisionAI(b64,mimeType,prompt);
+    if(result){
+      if(S.session) S.session.elements.main={focus,reading:result,timestamp:Date.now()};
+      addModuleResult('main','LECTURE DE LA MAIN',result,'mod-main');
+      closeOverlay('mod-main');
+      toast('Lecture de la main generee');
+    }
+    btn.textContent='ANALYSER LA MAIN';btn.disabled=false;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 18 — MODULE PENDULE
+═══════════════════════════════════════════ */
+function openPendule(){
+  document.getElementById('pendule-question').value='';
+  document.getElementById('pendule-result').style.display='none';
+  document.getElementById('pendule-answer-display').innerHTML='';
+  const line=document.querySelector('.pendule-line');
+  line.style.animation='pendule-idle 1.8s ease-in-out infinite';
+  openOverlay('mod-pendule');
+}
+async function runPendule(){
+  const question=document.getElementById('pendule-question').value.trim();
+  if(!question){toast('Posez une question au pendule','warn');return;}
+  const btn=document.querySelector('#mod-pendule .btn-primary');btn.textContent='CONSULTATION...';btn.disabled=true;
+  // Animation pendule rapide
+  const line=document.querySelector('.pendule-line');
+  line.style.animation='pendule-idle 0.5s ease-in-out infinite';
+  const t=S.session?.transcript||'';
+  const c=S.activeClient;
+  const msg=`Consultation du pendule pour la question : "${question}"
+${c?'Client : '+c.name+(c.profile?'. '+c.profile.slice(0,100):''):''}
+Consultation : "${t.slice(-400)||'Pas de consultation active'}"
+
+Donne une reponse de pendule claire, contextuelle et exploitable. Pas generique — en lien avec la situation reelle.
+JSON: {"reponse":"OUI","confiance":85,"explication":"explication en 2-3 phrases","nuance":"une nuance importante si applicable"}
+La reponse doit etre "OUI", "NON", ou "INCERTAIN".`;
+  const raw=await callAI(msg,350,null,true);
+  const data=safeJSON(raw);
+  if(data?.reponse){
+    // Afficher la reponse
+    const rep=data.reponse.toUpperCase();
+    const cls=rep==='OUI'?'pendule-yes':rep==='NON'?'pendule-no':'pendule-maybe';
+    const answerDiv=document.getElementById('pendule-answer-display');
+    answerDiv.innerHTML=`<div class="pendule-answer ${cls}">${rep}</div>${data.confiance?`<div style="text-align:center;font-size:11px;color:var(--text3);margin-bottom:4px">Confiance : ${data.confiance}%</div>`:''}`;
+    line.style.animation=rep==='OUI'?'pendule-yes-swing 1s ease-in-out infinite':rep==='NON'?'pendule-no-swing 1s ease-in-out':' pendule-idle 2s ease-in-out infinite';
+    document.getElementById('pendule-explanation').innerHTML=data.explication+(data.nuance?`<br><br><em style="color:var(--yellow)">${data.nuance}</em>`:'');
+    document.getElementById('pendule-result').style.display='block';
+    if(S.session) S.session.elements.pendule.push({question,reponse:rep,confiance:data.confiance,explication:data.explication,nuance:data.nuance,timestamp:Date.now()});
+    addModuleResult('pendule',`PENDULE — "${question}"`,
+      `REPONSE : ${rep}${data.confiance?' (confiance '+data.confiance+'%)':''}\n\n${data.explication}${data.nuance?'\n\nNUANCE : '+data.nuance:''}`,
+      null);
+    toast('Reponse du pendule : '+rep);
+  }
+  btn.textContent='CONSULTER LE PENDULE';btn.disabled=false;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 19 — MODULE ALERTES
+═══════════════════════════════════════════ */
+async function runAlertes(){
+  const btn=document.querySelector('#mod-alertes .btn-primary');btn.textContent='ANALYSE...';btn.disabled=true;
+  document.getElementById('alertes-result').style.display='none';
+  const t=S.session?.transcript||'';
+  const el=S.session?.elements;
+  const c=S.activeClient;
+  const msg=`Analyse globale de la consultation en cours.
+Transcription : "${t.slice(-1200)||'Pas de transcription'}"
+${c?'Client : '+c.name+(c.profile?'. '+c.profile.slice(0,100):''):'' }
+${c?.consultations?.length?'Historique : '+c.consultations.slice(0,3).map(cs=>cs.summary).join('. '):''}
+Elements generes : ${el?[
+  el.tarot.length?'Tarot: '+el.tarot.map(t=>t.cards.join(',')).join('|'):'',
+  el.numerologie?'Numerologie: '+JSON.stringify(el.numerologie.calculs):'',
+  el.pendule.length?'Pendule: '+el.pendule.map(p=>p.question+'=>'+p.reponse).join('|'):''
+].filter(Boolean).join(' / ') : 'aucun'}
+
+Analyse de maniere experte et signale :
+1. Points de vigilance importants
+2. Incoherences ou contradictions detectees
+3. Sujets a approfondir
+4. Elements sensibles necesitant du tact
+5. Rappels utiles (services proposes pas encore mentionnes, themes non explores)
+6. Recommandations pour mieux conduire la consultation
+JSON: {"alertes":[{"type":"vigilance|incoherence|approfondir|sensible|rappel|recommandation","texte":"description precise"}],"score_global":"evaluation en 1 phrase","priorite":"l'action la plus urgente"}`;
+  const raw=await callAI(msg,700,null,true);
+  const data=safeJSON(raw);
+  if(data?.alertes){
+    const colors={vigilance:'var(--red)',incoherence:'var(--orange)',approfondir:'var(--yellow)',sensible:'var(--pink)',rappel:'var(--cyan)',recommandation:'var(--green)'};
+    let html=data.alertes.map(a=>`<div style="margin-bottom:10px;padding:8px 12px;border-left:3px solid ${colors[a.type]||'var(--text3)'};background:rgba(255,255,255,0.02);border-radius:0 6px 6px 0;">
+      <div style="font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:${colors[a.type]||'var(--text3)'};margin-bottom:3px">${a.type}</div>
+      <div style="font-size:13px;line-height:1.5">${a.texte}</div>
+    </div>`).join('');
+    if(data.score_global) html+=`<div style="margin-top:12px;padding:8px;background:rgba(255,255,255,0.04);border-radius:8px;font-size:12px;color:var(--text2)">BILAN : ${data.score_global}</div>`;
+    if(data.priorite) html+=`<div style="margin-top:6px;padding:8px;background:rgba(255,68,0,0.06);border-radius:8px;font-size:12px;color:var(--red)">PRIORITE : ${data.priorite}</div>`;
+    document.getElementById('alertes-content').innerHTML=html;
+    document.getElementById('alertes-result').style.display='block';
+    if(S.session) S.session.elements.alertes.push({type:'analyse_globale',data,timestamp:Date.now()});
+    addModuleResult('alerte-glob','ANALYSE ET ALERTES',
+      data.alertes.map(a=>`[${a.type.toUpperCase()}] ${a.texte}`).join('\n')+(data.priorite?'\n\nPRIORITE : '+data.priorite:''),
+      null);
+    toast('Analyse globale generee');
+  }
+  btn.textContent='LANCER L\'ANALYSE GLOBALE';btn.disabled=false;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 20 — ACTIONS RAPIDES SUPPLEMENTAIRES
+═══════════════════════════════════════════ */
+function openDOB(){
+  const c=S.activeClient;
+  if(c?.birthdate) document.getElementById('dob-input').value=c.birthdate;
+  if(c?.name) document.getElementById('dob-name').value=c.name;
+  document.getElementById('dob-overlay').classList.add('show');
+}
+function formatDOBInput(el){
+  let v=el.value.replace(/\D/g,'');
+  if(v.length>2) v=v.slice(0,2)+'/'+v.slice(2);
+  if(v.length>5) v=v.slice(0,5)+'/'+v.slice(5);
+  el.value=v.slice(0,10);
+}
+function parseDOBText(str){
+  const clean=str.trim();
+  const m1=clean.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+  if(m1) return new Date(parseInt(m1[3]),parseInt(m1[2])-1,parseInt(m1[1]));
+  const m2=clean.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/);
+  if(m2) return new Date(parseInt(m2[1]),parseInt(m2[2])-1,parseInt(m2[3]));
+  return null;
+}
+async function runDOBAnalysis(){
+  const dobStr=document.getElementById('dob-input').value.trim();
+  if(!dobStr){toast('Entrez une date de naissance','warn');return;}
+  const d=parseDOBText(dobStr);
+  if(!d||isNaN(d.getTime())){toast('Format invalide — JJ/MM/AAAA','warn');return;}
+  closeOverlay('dob-overlay');
+  S.processing=true;setStatus('processing');setSuggestionLoading(true);
+  const name=document.getElementById('dob-name').value||'le client';
+  const age=new Date().getFullYear()-d.getFullYear();
+  const msg=`Date de naissance de ${name} : ${d.toLocaleDateString('fr-FR')} (${age} ans)
+Transcription : "${(S.session?.transcript||'').slice(-600)||'Debut de consultation'}"
+
+Analyse medium complete : signe astrologique, theme natal simplifie, numerologie, traits profonds, tendances actuelles, points de vigilance. Cree l'effet waouh.
+JSON: {"suggestion":"...","contexte":"Analyse date de naissance","alerte":null,"opportunite":null}`;
+  try{
+    const raw=await callAI(msg,700);const data=safeJSON(raw);
+    if(data){renderResponse(data);if(S.session)S.session.suggestions.push({...data,type:'dob',timestamp:Date.now()});}
+  }finally{
+    S.processing=false;setStatus(S.listening&&!S.isPaused?'listening':S.isPaused?'paused':'idle');setSuggestionLoading(false);
+  }
+}
+function openFreeText(){document.getElementById('ft-input').value='';document.getElementById('freetext-overlay').classList.add('show');}
+async function runFreeText(){
+  const q=document.getElementById('ft-input').value.trim();
+  if(!q){toast('Ecrivez votre question','warn');return;}
+  closeOverlay('freetext-overlay');
+  S.processing=true;setStatus('processing');setSuggestionLoading(true);
+  const msg=`Transcription : "${(S.session?.transcript||'').slice(-600)||'Debut de consultation'}"
+${S.activeClient?'Client : '+S.activeClient.name:''}
+Question de Frederick : "${q}"
+Reponds en restant dans le role du souffleur medium. Fournis une reponse exploitable immediatement.
+JSON: {"suggestion":"...","contexte":"...","alerte":null,"opportunite":null}`;
+  try{
+    const raw=await callAI(msg,600);const data=safeJSON(raw);
+    if(data){renderResponse(data);if(S.session)S.session.suggestions.push({...data,type:'question_libre',timestamp:Date.now()});}
+  }finally{
+    S.processing=false;setStatus(S.listening&&!S.isPaused?'listening':S.isPaused?'paused':'idle');setSuggestionLoading(false);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 21 — RAPPORT DE CONSULTATION
+═══════════════════════════════════════════ */
+async function generateAndShowReport(){
+  openOverlay('rapport-overlay');
+  document.getElementById('rapport-loading').style.display='block';
+  document.getElementById('rapport-content').style.display='none';
+  const sess=S.session;
+  if(!sess){document.getElementById('rapport-loading').textContent='Aucune session a analyser.';return;}
+  const duration=Math.floor((sess.endTime-sess.startTime-sess.pausedMs)/1000);
+  const mins=Math.floor(duration/60);
+  const el=sess.elements;
+  const msg=`Consultation terminee. Genere un rapport complet.
+
+CLIENT : ${sess.clientName}
+DUREE : ${mins} minute(s)
+TRANSCRIPTION : "${sess.transcript.slice(-2000)}"
+SUGGESTIONS DONNEES : ${sess.suggestions.length}
+ALERTES : ${el.alertes.filter(a=>a.text).map(a=>a.text).join(' | ')||'aucune'}
+TAROT : ${el.tarot.map(t=>`${t.deck} (${t.spread}) : ${t.cards.join(', ')}`).join(' | ')||'aucun tirage'}
+NUMEROLOGIE : ${el.numerologie?JSON.stringify(el.numerologie.calculs):'non realise'}
+HOROSCOPE : ${el.horoscope?el.horoscope.sign+' — '+el.horoscope.period:'non realise'}
+ASTROLOGIE : ${el.astrologie?el.astrologie.signe_solaire||'realise':'non realise'}
+ANGE GARDIEN : ${el.angeGardien?'message recu':'non realise'}
+LIGNE DE LA MAIN : ${el.main?'analyse realisee':'non realise'}
+PENDULE : ${el.pendule.map(p=>p.question+' => '+p.reponse).join(' | ')||'aucune question'}
+
+Redige un rapport structure, professionnel et complet. JSON :
+{"titre":"titre du rapport","resume":"resume general en 2-3 phrases","themes_principaux":["theme1","theme2"],"points_cles":["point1","point2","point3"],"services_proposes":["service1"],"recommandations_prochaine":"ce a faire lors de la prochaine consultation","conclusion":"conclusion en 1 phrase inspirante"}`;
+  const sys=`Tu es l'assistant de Frederick. Genere des rapports de consultation clairs, professionnels et confidentiels. JSON uniquement.`;
+  const raw=await callAI(msg,700,sys,true);
+  const data=safeJSON(raw);
+  S.currentReport={session:sess,data,generatedAt:new Date().toISOString()};
+  // Construire le rapport textuel complet
+  const reportText=buildReportText(sess,data);
+  S.currentReport.fullText=reportText;
+  document.getElementById('rapport-display').innerHTML=formatReportHTML(sess,data,el);
+  document.getElementById('rapport-title').textContent=data?.titre||'RAPPORT DE CONSULTATION';
+  document.getElementById('rapport-loading').style.display='none';
+  document.getElementById('rapport-content').style.display='block';
+  document.getElementById('btn-save-rapport').style.display=S.activeClient?'block':'none';
+  // Sauvegarder automatiquement
+  autoSaveReport();
+  document.getElementById('rapport-overlay').scrollTop=0;
+}
+
+function buildReportText(sess,data){
+  const el=sess.elements;
+  const date=new Date(sess.startTime).toLocaleDateString('fr-FR');
+  const duration=Math.floor((sess.endTime-sess.startTime-sess.pausedMs)/60000);
+  let txt=`PGI MEDIUMASSIST PRO — RAPPORT DE CONSULTATION\n`;
+  txt+=`${'='.repeat(50)}\n`;
+  txt+=`DATE : ${date} | DUREE : ${duration} min | CLIENT : ${sess.clientName}\n\n`;
+  if(data?.resume) txt+=`RESUME\n${data.resume}\n\n`;
+  if(data?.themes_principaux?.length) txt+=`THEMES PRINCIPAUX\n${data.themes_principaux.map(t=>'• '+t).join('\n')}\n\n`;
+  if(data?.points_cles?.length) txt+=`POINTS CLES\n${data.points_cles.map(p=>'• '+p).join('\n')}\n\n`;
+  if(el.tarot.length){ txt+=`TAROT\n`; el.tarot.forEach(t=>{ txt+=`${t.deck} — ${t.spread}\nCartes : ${t.cards.join(', ')}\n${t.interpretation}\n`; }); txt+='\n'; }
+  if(el.numerologie) txt+=`NUMEROLOGIE\n${Object.entries(el.numerologie.calculs).map(([k,v])=>k+' : '+v).join('\n')}\n${el.numerologie.analyse}\n\n`;
+  if(el.horoscope) txt+=`HOROSCOPE (${el.horoscope.sign})\n${el.horoscope.horoscope}\n\n`;
+  if(el.astrologie) txt+=`ASTROLOGIE\n${el.astrologie.analyse}\n\n`;
+  if(el.angeGardien) txt+=`MESSAGE DE L'ANGE GARDIEN\n${el.angeGardien.nom_ange?'Ange : '+el.angeGardien.nom_ange+'\n':''}${el.angeGardien.message}\n\n`;
+  if(el.main) txt+=`LIGNE DE LA MAIN\n${el.main.reading}\n\n`;
+  if(el.pendule.length){ txt+=`PENDULE\n`; el.pendule.forEach(p=>{ txt+=`Q: ${p.question}\nR: ${p.reponse} (${p.confiance}%)\n${p.explication}\n`; }); txt+='\n'; }
+  if(el.alertes.filter(a=>a.text).length){ txt+=`ALERTES\n`; el.alertes.filter(a=>a.text).forEach(a=>txt+=`• ${a.text}\n`); txt+='\n'; }
+  if(data?.services_proposes?.length) txt+=`SERVICES PROPOSES\n${data.services_proposes.map(s=>'• '+s).join('\n')}\n\n`;
+  if(data?.recommandations_prochaine) txt+=`PROCHAINE CONSULTATION\n${data.recommandations_prochaine}\n\n`;
+  if(data?.conclusion) txt+=`CONCLUSION\n${data.conclusion}\n\n`;
+  txt+=`${'='.repeat(50)}\nFrederick — ClairvoyanceMedium.com\n`;
+  return txt;
+}
+
+function formatReportHTML(sess,data,el){
+  const date=new Date(sess.startTime).toLocaleDateString('fr-FR');
+  const duration=Math.floor((sess.endTime-sess.startTime-sess.pausedMs)/60000);
+  const sec=(t,col,content)=>content?`<div class="report-section"><div class="report-section-title" style="background:rgba(${col},0.1);color:rgb(${col})">${t}</div><div class="report-body">${content}</div></div>`:'';
+  let h=`<div style="font-size:10px;color:var(--text3);margin-bottom:14px;letter-spacing:1px">${date} — ${duration} MIN — ${sess.clientName}</div>`;
+  if(data?.resume) h+=sec('RESUME','0,255,204',data.resume);
+  if(data?.themes_principaux?.length) h+=sec('THEMES','255,208,0',data.themes_principaux.map(t=>'• '+t).join('\n'));
+  if(data?.points_cles?.length) h+=sec('POINTS CLES','57,255,20',data.points_cles.map(p=>'• '+p).join('\n'));
+  if(el.tarot.length) h+=sec('TAROT','255,170,0',el.tarot.map(t=>`${t.deck} — ${t.spread}\nCartes : ${t.cards.join(', ')}\n\n${t.interpretation}`).join('\n\n'));
+  if(el.numerologie) h+=sec('NUMEROLOGIE','204,68,255',Object.entries(el.numerologie.calculs).map(([k,v])=>k+' : '+v).join(' | ')+'\n\n'+el.numerologie.analyse);
+  if(el.horoscope) h+=sec('HOROSCOPE','255,208,0',el.horoscope.horoscope);
+  if(el.astrologie) h+=sec('ASTROLOGIE','0,207,255',el.astrologie.analyse);
+  if(el.angeGardien) h+=sec('ANGE GARDIEN','255,255,255',el.angeGardien.message);
+  if(el.main) h+=sec('LIGNE DE LA MAIN','255,51,153',el.main.reading);
+  if(el.pendule.length) h+=sec('PENDULE','0,255,204',el.pendule.map(p=>`Q: ${p.question}\nR: ${p.reponse}\n${p.explication}`).join('\n\n'));
+  if(data?.services_proposes?.length) h+=sec('SERVICES PROPOSES','255,136,0',data.services_proposes.map(s=>'• '+s).join('\n'));
+  if(data?.recommandations_prochaine) h+=sec('PROCHAINE CONSULTATION','0,207,255',data.recommandations_prochaine);
+  if(data?.conclusion) h+=sec('CONCLUSION','57,255,20',data.conclusion);
+  return h;
+}
+
+function copyReport(){
+  if(!S.currentReport?.fullText){toast('Aucun rapport a copier','warn');return;}
+  navigator.clipboard?.writeText(S.currentReport.fullText).catch(()=>{});
+  toast('Rapport copie');
+}
+function downloadReport(){
+  if(!S.currentReport?.fullText){toast('Aucun rapport a telecharger','warn');return;}
+  const blob=new Blob([S.currentReport.fullText],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const date=new Date().toLocaleDateString('fr-FR').replace(/\//g,'-');
+  a.download=`rapport_${S.currentReport.session.clientName.replace(/\s+/g,'_')}_${date}.txt`;
+  a.click();URL.revokeObjectURL(url);
+  toast('Rapport telecharge');
+}
+async function saveReportToClient(){
+  if(!S.activeClient||!S.currentReport){toast('Aucun client selectionne','warn');return;}
+  const sess=S.session||S.currentReport.session;
+  const el=sess?.elements||{};
+  const payload={
+    summary:S.currentReport.data?.resume||'',
+    keyPoints:S.currentReport.data?.points_cles||[],
+    transcript:(sess?.transcript||'').slice(-2000),
+    servicesDiscussed:S.currentReport.data?.services_proposes||[],
+    notes:S.currentReport.data?.recommandations_prochaine||'',
+    elements:{
+      tarotCount:el.tarot?.length||0,
+      hasPendule:el.pendule?.length>0,
+      hasAstrologie:!!el.astrologie,
+      hasAnge:!!el.angeGardien
+    },
+    fullText:S.currentReport.fullText
+  };
+  const r=await workerRequest('POST',`/clients/${S.activeClient.id}/consultations`,payload);
+  if(r){
+    S.activeClient.consultations=[r,...(S.activeClient.consultations||[])];
+    toast('Rapport sauvegarde dans la fiche client');
+  } else {
+    const lc=JSON.parse(ls('ma_client_'+S.activeClient.id)||'{}');
+    lc.consultations=[{...payload,date:new Date().toISOString(),cid:'c_'+Date.now()},...(lc.consultations||[])];
+    ls('ma_client_'+S.activeClient.id,JSON.stringify(lc));
+    toast('Sauvegarde localement');
+  }
+  closeOverlay('rapport-overlay');
+}
+function autoSaveReport(){
+  if(!S.currentReport) return;
+  const reports=JSON.parse(ls('ma_reports')||'[]');
+  reports.unshift({
+    id:'r_'+Date.now(),
+    clientId:S.currentReport.session.clientId,
+    clientName:S.currentReport.session.clientName,
+    date:new Date().toISOString(),
+    resume:S.currentReport.data?.resume||'',
+    fullText:S.currentReport.fullText
+  });
+  ls('ma_reports',JSON.stringify(reports.slice(0,100)));
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 22 — HISTORIQUE DES RAPPORTS
+═══════════════════════════════════════════ */
+function openRapportsOverlay(){
+  filterRapports();
+  openOverlay('rapports-overlay');
+}
+function filterRapports(){
+  const q=(document.getElementById('rapport-search')?.value||'').toLowerCase();
+  const reports=JSON.parse(ls('ma_reports')||'[]');
+  const filtered=reports.filter(r=>!q||r.clientName?.toLowerCase().includes(q)||r.date?.includes(q));
+  const container=document.getElementById('rapports-list');
+  if(!filtered.length){container.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px">Aucun rapport sauvegarde.</div>';return;}
+  container.innerHTML=filtered.map(r=>`
+    <div class="consult-item" onclick="viewSavedReport('${r.id}')">
+      <div class="consult-date">${new Date(r.date).toLocaleDateString('fr-FR')} — ${r.clientName}</div>
+      <div class="consult-summary">${r.resume||''}</div>
+    </div>`).join('');
+}
+function viewSavedReport(id){
+  const reports=JSON.parse(ls('ma_reports')||'[]');
+  const r=reports.find(x=>x.id===id);
+  if(!r) return;
+  S.currentReport={fullText:r.fullText,session:{clientName:r.clientName,startTime:new Date(r.date).getTime(),endTime:0,pausedMs:0,elements:{tarot:[],numerologie:null,horoscope:null,astrologie:null,angeGardien:null,main:null,pendule:[],alertes:[]}}};
+  closeOverlay('rapports-overlay');
+  document.getElementById('rapport-loading').style.display='none';
+  document.getElementById('rapport-display').innerHTML=`<pre style="font-size:12px;line-height:1.7;color:var(--text2);white-space:pre-wrap">${r.fullText||''}</pre>`;
+  document.getElementById('rapport-title').textContent='RAPPORT — '+r.clientName;
+  document.getElementById('rapport-content').style.display='block';
+  document.getElementById('btn-save-rapport').style.display='none';
+  openOverlay('rapport-overlay');
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 23 — EMAIL CONSULTATION
+═══════════════════════════════════════════ */
+function openEmailOverlay(){
+  const saved=ls('ma_email_directives');
+  if(saved) document.getElementById('email-directives').value=saved;
+  document.getElementById('email-question').value='';
+  document.getElementById('email-response-section').style.display='none';
+  updateEmailClientDisplay();
+  openOverlay('email-overlay');
+}
+function saveEmailDirectives(){ls('ma_email_directives',document.getElementById('email-directives').value);}
+function updateEmailClientDisplay(){
+  const el=document.getElementById('email-client-name');
+  if(S.emailClient) el.textContent=S.emailClient.name+(S.emailClient.birthdate?' — '+S.emailClient.birthdate:'');
+  else if(S.activeClient){ S.emailClient=S.activeClient; el.textContent=S.activeClient.name+(S.activeClient.birthdate?' — '+S.activeClient.birthdate:''); }
+  else el.textContent='Aucun client selectionne';
+}
+function openEmailClientSearch(){
+  filterEmailClients();
+  openOverlay('email-client-overlay');
+}
+function filterEmailClients(){
+  const q=(document.getElementById('email-client-search')?.value||'').toLowerCase();
+  const clients=JSON.parse(ls('ma_clients_index')||'[]');
+  const filtered=clients.filter(c=>!q||c.name?.toLowerCase().includes(q)||c.birthdate?.includes(q)||c.phone?.includes(q));
+  const container=document.getElementById('email-client-list');
+  if(!filtered.length){container.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding:12px">Aucun client trouve.</div>';return;}
+  container.innerHTML=filtered.map(c=>`<div class="client-item" onclick="selectEmailClient('${c.id}')">
+    <div class="ci-avatar">CLT</div>
+    <div class="ci-info"><div class="ci-name">${c.name}</div><div class="ci-detail">${c.phone||''}${c.birthdate?' • '+c.birthdate:''}</div></div>
+  </div>`).join('');
+}
+async function selectEmailClient(id){
+  const remote=await workerRequest('GET','/clients/'+id);
+  const lc=ls('ma_client_'+id);
+  S.emailClient=remote||(lc?JSON.parse(lc):allClients.find(c=>c.id===id));
+  closeOverlay('email-client-overlay');
+  updateEmailClientDisplay();
+}
+async function generateEmailResponse(){
+  const directives=document.getElementById('email-directives').value.trim();
+  const question=document.getElementById('email-question').value.trim();
+  if(!question){toast('Collez la question du client','warn');return;}
+  const btn=document.getElementById('btn-gen-email');btn.textContent='GENERATION EN COURS...';btn.disabled=true;
+  document.getElementById('email-response-section').style.display='none';
+  const c=S.emailClient;
+  let histCtx='';
+  if(c){
+    histCtx=`\nClient : ${c.name}${c.birthdate?' — ne le '+c.birthdate:''}${c.sign?' — signe '+c.sign:''}`;
+    if(c.profile) histCtx+=`\nProfil : ${c.profile}`;
+    if(c.consultations?.length) histCtx+=`\nHistorique phone : `+c.consultations.slice(0,3).map(cs=>cs.summary||'consultation').join('. ');
+    if(c.emailConsultations?.length) histCtx+=`\nHistorique email : `+c.emailConsultations.slice(0,3).map(ec=>ec.summary||'email').join('. ');
+  }
+  const sys=`Tu es Frederick, medium et guide spirituel depuis plus de 25 ans, fondateur de ClairvoyanceMedium.com. Tu rediges des reponses a des questions par email — professionnelles, spirituelles, personnalisees.${directives?'\n\nDIRECTIVES OBLIGATOIRES :\n'+directives:''}
+Regles : reponse complete prete a envoyer (pas de JSON), ton chaleureux et spirituel, montrer que la question a ete vraiment lue et analysee, proposer naturellement une consultation approfondie si pertinent, longueur 150-300 mots selon la complexite.${histCtx?'\n'+histCtx:''}`;
+  try{
+    const r=await fetch(getApiEndpoint(),{method:'POST',headers:buildHeaders(),body:JSON.stringify({
+      model:cfg.model,max_tokens:700,temperature:0.7,
+      messages:[{role:'system',content:sys},{role:'user',content:`Question recue par email :\n\n${question}\n\nRedige la reponse complete.`}]
+    })});
+    if(!r.ok){toast('Erreur IA','err');btn.textContent='GENERER LA REPONSE';btn.disabled=false;return;}
+    const data=await r.json();
+    const text=data.choices?.[0]?.message?.content||'';
+    document.getElementById('email-response-text').textContent=text;
+    document.getElementById('email-response-section').style.display='block';
+    S._lastEmailResponse={question,response:text,clientId:c?.id,clientName:c?.name,date:new Date().toISOString()};
+    document.getElementById('email-response-section').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }catch(e){toast('Connexion IA echouee','err');}
+  btn.textContent='GENERER LA REPONSE';btn.disabled=false;
+}
+function copyEmailResponse(){
+  const text=document.getElementById('email-response-text').textContent;
+  navigator.clipboard?.writeText(text).catch(()=>{});toast('Reponse email copiee');
+}
+async function saveEmailConsultation(){
+  const email=S._lastEmailResponse;
+  if(!email){toast('Aucune reponse a sauvegarder','warn');return;}
+  const payload={summary:email.question.slice(0,100),question:email.question,response:email.response,date:email.date};
+  if(email.clientId){
+    const r=await workerRequest('POST',`/clients/${email.clientId}/emailConsultations`,payload);
+    if(r){toast('Consultation email sauvegardee');} else {
+      const lc=JSON.parse(ls('ma_client_'+email.clientId)||'{}');
+      lc.emailConsultations=[{...payload,cid:'ec_'+Date.now()},...(lc.emailConsultations||[])];
+      ls('ma_client_'+email.clientId,JSON.stringify(lc));
+      toast('Sauvegarde localement');
+    }
+  } else {toast('Selectionnez un client pour sauvegarder','warn');}
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 24 — GESTION CLIENTS
+═══════════════════════════════════════════ */
+let allClients=[];
+
+async function loadClients(){
+  const remote=await workerRequest('GET','/clients');
+  if(remote&&Array.isArray(remote)){
+    allClients=remote;
+    ls('ma_clients_index',JSON.stringify(remote));
+  } else {
+    const local=ls('ma_clients_index');
+    allClients=local?JSON.parse(local):[];
+  }
+  renderClientList();
+}
+function renderClientList(){
+  const q=(document.getElementById('client-search')?.value||'').toLowerCase();
+  const filtered=allClients.filter(c=>{
+    if(!q) return true;
+    return c.name?.toLowerCase().includes(q)||c.phone?.includes(q)||c.birthdate?.includes(q);
+  });
+  const container=document.getElementById('client-list-container');
+  if(!filtered.length){container.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding
+
+
+
+
